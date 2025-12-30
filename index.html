@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy New Year, Gunjan! ❤️</title>
 
-    <!-- Fonts: Elegant Handwriting & Modern Sans -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -16,6 +16,11 @@
     <!-- Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1"
         rel="stylesheet" />
+
+    <!-- Firebase SDKs (Added for Tracking) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -59,12 +64,10 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        /* --- Custom Styles for Advanced Effects --- */
-
+        /* --- Custom Styles --- */
         body {
             background-color: #0f0518;
             cursor: none;
-            /* Hide default cursor for custom one */
         }
 
         /* Custom Cursor */
@@ -77,29 +80,38 @@
             mix-blend-mode: screen;
         }
 
-        /* Typewriter Cursor */
-        .typing-cursor::after {
-            content: '|';
-            animation: blink 1s step-end infinite;
+        /* Voice Glow Styles (New) */
+        .lyric-word {
+            opacity: 0.2;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-block;
+            margin-right: 0.3em;
+            filter: blur(1px);
         }
 
-        @keyframes blink {
-            50% {
-                opacity: 0;
-            }
+        .lyric-active {
+            opacity: 1;
+            transform: scale(1.1);
+            color: #fff;
+            text-shadow: 0 0 15px rgba(236, 72, 153, 0.8), 0 0 30px rgba(139, 92, 246, 0.6);
+            filter: blur(0);
+        }
+
+        .lyric-passed {
+            opacity: 0.7;
+            color: #e2e8f0;
+            filter: blur(0);
         }
 
         /* 3D Tilt Card Effect */
         .tilt-card {
             transform-style: preserve-3d;
             transition: transform 0.1s ease-out;
-            /* Super smooth reaction */
             will-change: transform;
         }
 
         .tilt-content {
             transform: translateZ(20px);
-            /* Pop out effect */
         }
 
         /* Glassmorphism */
@@ -117,12 +129,10 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* Smooth Scrolling */
         html {
             scroll-behavior: smooth;
         }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -140,7 +150,6 @@
             background: #6d28d9;
         }
 
-        /* Animation Classes */
         .reveal-on-scroll {
             opacity: 0;
             transform: translateY(40px);
@@ -156,21 +165,17 @@
 
 <body class="text-white font-sans overflow-x-hidden antialiased selection:bg-secondary selection:text-white">
 
-    <!-- 1. ENTRANCE OVERLAY (Required for Audio Autoplay Policy) -->
+    <!-- 1. ENTRANCE OVERLAY -->
     <div id="entrance-overlay"
         class="fixed inset-0 z-[100] bg-dark flex flex-col items-center justify-center transition-opacity duration-1000">
         <div class="text-center space-y-8 p-6 relative z-10">
-            <!-- Pulsing Heart Behind -->
             <div
                 class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-secondary/20 rounded-full blur-[60px] animate-pulse-slow">
             </div>
-
             <h1
                 class="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary font-handwriting animate-float">
-                For You, Gunjan
-            </h1>
+                For You, Gunjan</h1>
             <p class="text-slate-400 text-lg font-light tracking-wide">A little surprise for our New Year...</p>
-
             <button id="enter-btn"
                 class="group relative px-10 py-4 bg-white/5 backdrop-blur-md rounded-full border border-white/10 hover:border-secondary/50 transition-all duration-500 hover:scale-110 overflow-hidden shadow-2xl shadow-secondary/20">
                 <div
@@ -190,10 +195,27 @@
     <canvas id="cursor-canvas" class="cursor-trail"></canvas>
 
     <!-- 3. AUDIO ELEMENTS -->
-    <!-- REPLACE 'assets/mine.mp3' with your actual file path -->
+    <!-- MAKE SURE 'assets/mine.mp3' EXISTS -->
     <audio id="bg-music" loop crossorigin="anonymous">
         <source src="assets/mine.mp3" type="audio/mpeg">
     </audio>
+
+    <!-- SECRET ADMIN MODAL -->
+    <div id="admin-modal" class="fixed inset-0 z-[150] bg-black/95 hidden items-center justify-center backdrop-blur-md">
+        <div class="glass-panel p-8 rounded-2xl max-w-sm w-full text-center space-y-6 relative">
+            <button onclick="document.getElementById('admin-modal').style.display='none'"
+                class="absolute top-4 right-4 text-white/50 hover:text-white">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <h3 class="text-2xl font-bold text-white">Love Tracker 💘</h3>
+            <div class="py-8">
+                <p class="text-white/60 text-xs uppercase tracking-widest mb-2">Total 'Send Love' Clicks</p>
+                <p id="admin-count"
+                    class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
+                    0</p>
+            </div>
+        </div>
+    </div>
 
     <!-- Floating Controls -->
     <div class="fixed top-6 right-6 z-50 flex gap-4 opacity-0 transition-opacity duration-1000" id="controls-ui">
@@ -209,11 +231,9 @@
         <button onclick="sendLove()"
             class="group relative w-16 h-16 bg-gradient-to-tr from-pink-600 to-purple-600 rounded-full flex items-center justify-center text-white shadow-xl shadow-pink-600/30 hover:shadow-pink-600/60 hover:scale-110 transition-all duration-300">
             <span class="material-symbols-outlined text-3xl animate-bounce">favorite</span>
-            <!-- Tooltip -->
             <span
-                class="absolute right-full mr-4 top-1/2 -translate-y-1/2 scale-0 group-hover:scale-100 origin-right transition-transform bg-white/90 text-purple-900 text-xs font-bold px-3 py-1.5 rounded-lg whitespace-nowrap shadow-lg">
-                Send Love!
-            </span>
+                class="absolute right-full mr-4 top-1/2 -translate-y-1/2 scale-0 group-hover:scale-100 origin-right transition-transform bg-white/90 text-purple-900 text-xs font-bold px-3 py-1.5 rounded-lg whitespace-nowrap shadow-lg">Send
+                Love!</span>
         </button>
     </div>
 
@@ -223,7 +243,6 @@
         <!-- SECTION 1: HERO & COUNTDOWN -->
         <section
             class="min-h-screen w-full flex flex-col justify-center items-center relative overflow-hidden px-6 pt-20 pb-10">
-            <!-- Background Glows -->
             <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
                 <div
                     class="absolute top-[20%] left-[10%] w-96 h-96 bg-primary/20 rounded-full blur-[120px] animate-pulse-slow">
@@ -233,8 +252,6 @@
             </div>
 
             <div class="z-10 text-center max-w-4xl mx-auto flex flex-col items-center gap-10">
-
-                <!-- Animated Tag -->
                 <div
                     class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm animate-fade-in-up">
                     <span class="relative flex h-3 w-3">
@@ -246,7 +263,6 @@
                         Together</span>
                 </div>
 
-                <!-- Main Title -->
                 <div class="space-y-6 animate-fade-in-up" style="animation-delay: 0.2s;">
                     <h1 class="text-5xl md:text-8xl font-black leading-tight tracking-tight drop-shadow-2xl">
                         Happy New Year,<br>
@@ -257,35 +273,29 @@
                     </p>
                 </div>
 
-                <!-- Glass Countdown -->
                 <div class="glass-panel p-6 md:p-8 rounded-3xl w-full max-w-2xl animate-fade-in-up hover:border-secondary/30 transition-colors duration-500"
                     style="animation-delay: 0.4s;">
                     <div class="grid grid-cols-4 gap-4 text-center divide-x divide-white/10">
-                        <div class="flex flex-col">
-                            <span class="text-3xl md:text-5xl font-bold font-mono text-white" id="days">00</span>
-                            <span
+                        <div class="flex flex-col"><span class="text-3xl md:text-5xl font-bold font-mono text-white"
+                                id="days">00</span><span
                                 class="text-[10px] md:text-xs text-secondary uppercase font-bold tracking-widest mt-2">Days</span>
                         </div>
-                        <div class="flex flex-col">
-                            <span class="text-3xl md:text-5xl font-bold font-mono text-white" id="hours">00</span>
-                            <span
+                        <div class="flex flex-col"><span class="text-3xl md:text-5xl font-bold font-mono text-white"
+                                id="hours">00</span><span
                                 class="text-[10px] md:text-xs text-secondary uppercase font-bold tracking-widest mt-2">Hours</span>
                         </div>
-                        <div class="flex flex-col">
-                            <span class="text-3xl md:text-5xl font-bold font-mono text-white" id="minutes">00</span>
-                            <span
+                        <div class="flex flex-col"><span class="text-3xl md:text-5xl font-bold font-mono text-white"
+                                id="minutes">00</span><span
                                 class="text-[10px] md:text-xs text-secondary uppercase font-bold tracking-widest mt-2">Mins</span>
                         </div>
-                        <div class="flex flex-col">
-                            <span class="text-3xl md:text-5xl font-bold font-mono text-secondary animate-pulse"
-                                id="seconds">00</span>
-                            <span
+                        <div class="flex flex-col"><span
+                                class="text-3xl md:text-5xl font-bold font-mono text-secondary animate-pulse"
+                                id="seconds">00</span><span
                                 class="text-[10px] md:text-xs text-secondary uppercase font-bold tracking-widest mt-2">Secs</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Scroll Down -->
                 <button onclick="scrollToGallery()"
                     class="mt-8 animate-bounce text-slate-500 hover:text-white transition-colors">
                     <span class="material-symbols-outlined text-4xl">keyboard_double_arrow_down</span>
@@ -305,11 +315,8 @@
                         Our Journey So Far</h2>
                 </div>
 
-                <!-- Masonry Layout -->
                 <div class="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
-
-                    <!-- Photo Card 1 -->
-                    <!-- USER: Update src="assets/img1.png" -->
+                    
                     <div class="break-inside-avoid relative group rounded-3xl overflow-hidden cursor-none tilt-card bg-dark-surface shadow-2xl"
                         onclick="openLightbox(this)">
                         <div class="tilt-content">
@@ -324,7 +331,6 @@
                         </div>
                     </div>
 
-                    <!-- Photo Card 2 -->
                     <div class="break-inside-avoid relative group rounded-3xl overflow-hidden cursor-none tilt-card bg-dark-surface shadow-2xl"
                         onclick="openLightbox(this)">
                         <div class="tilt-content">
@@ -334,23 +340,19 @@
                             <div
                                 class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
                                 <p class="font-handwriting text-3xl text-secondary mb-1">Crazy Adventures</p>
-                                <p class="text-sm text-slate-300 font-medium">Getting lost together</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Quote Card -->
                     <div
                         class="break-inside-avoid relative p-10 bg-gradient-to-br from-primary/20 to-secondary/20 border border-white/5 rounded-3xl flex flex-col justify-center items-center text-center gap-6 min-h-[300px] tilt-card">
                         <span class="material-symbols-outlined text-5xl text-white/50">format_quote</span>
-                        <p class="font-handwriting text-3xl md:text-4xl text-white leading-relaxed">
-                            "In all the world, there is no heart for me like yours. In all the world, there is no love
-                            for you like mine."
+                        <p class="font-handwriting text-3xl md:text-4xl text-white leading-relaxed">"In all the world,
+                            there is no heart for me like yours. In all the world, there is no love for you like mine."
                         </p>
                         <p class="text-sm uppercase tracking-widest text-secondary font-bold">- Us</p>
                     </div>
 
-                    <!-- Photo Card 3 -->
                     <div class="break-inside-avoid relative group rounded-3xl overflow-hidden cursor-none tilt-card bg-dark-surface shadow-2xl"
                         onclick="openLightbox(this)">
                         <div class="tilt-content">
@@ -360,58 +362,37 @@
                             <div
                                 class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
                                 <p class="font-handwriting text-3xl text-secondary mb-1">Your Smile</p>
-                                <p class="text-sm text-slate-300 font-medium">My favorite view</p>
                             </div>
                         </div>
                     </div>
-                    <!-- Photo Card 4 -->
-                    <div class="break-inside-avoid relative group rounded-3xl overflow-hidden cursor-none tilt-card bg-dark-surface shadow-2xl"
-                        onclick="openLightbox(this)">
-                        <div class="tilt-content">
-                            <img src="assets/img4.png"
-                                class="w-full h-auto block object-cover transition-transform duration-700 group-hover:scale-110"
-                                alt="Memory">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
-                                <p class="font-handwriting text-3xl text-secondary mb-1">Quiet Moments</p>
-                                <p class="text-sm text-slate-300 font-medium">Just holding hands</p>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </section>
 
-        <!-- SECTION 3: INTERACTIVE LETTER & AUDIO VISUALIZER -->
+        <!-- SECTION 3: VOICE GLOW LETTER -->
         <section class="w-full py-20 px-6 flex justify-center items-center min-h-[90vh] relative reveal-on-scroll">
-
             <div
                 class="glass-panel w-full max-w-3xl p-8 md:p-14 rounded-[2rem] relative overflow-hidden text-center flex flex-col items-center gap-8 border-t border-white/10 shadow-2xl">
 
-                <!-- Background Audio Visualizer Canvas -->
                 <canvas id="visualizer-canvas"
                     class="absolute bottom-0 left-0 w-full h-48 opacity-20 pointer-events-none"></canvas>
 
-                <!-- Icon -->
                 <div
                     class="w-20 h-20 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center text-white shadow-lg shadow-primary/30 animate-float">
                     <span class="material-symbols-outlined text-4xl">local_florist</span>
                 </div>
 
-                <div class="space-y-8 relative z-10">
+                <div class="space-y-8 relative z-10 w-full">
                     <h2 class="font-handwriting text-5xl md:text-6xl text-white drop-shadow-lg">My Promise to You</h2>
 
-                    <!-- Typewriter Container -->
-                    <div
-                        class="prose prose-invert prose-lg text-slate-200 leading-loose font-light min-h-[120px] max-w-xl mx-auto">
-                        <p id="typewriter-text" class="hidden text-xl md:text-2xl">
-                            <!-- Text injected via JS -->
-                        </p>
+                    <!-- LYRIC CONTAINER -->
+                    <div id="lyrics-container"
+                        class="prose prose-invert prose-lg leading-loose font-light min-h-[150px] max-w-xl mx-auto text-xl md:text-2xl font-sans text-slate-200">
+                        <span class="text-white/30 text-base italic">(Tap 'Play Our Song' below to listen...)</span>
                     </div>
                 </div>
 
-                <!-- Custom Music Player Display -->
+                <!-- Custom Music Player Display (Triggers Voice Sync) -->
                 <div class="w-full max-w-md bg-black/40 backdrop-blur-md p-4 rounded-2xl flex items-center gap-5 border border-white/5 hover:border-white/10 transition-colors cursor-pointer group"
                     onclick="toggleMusic()">
                     <div
@@ -437,12 +418,14 @@
         </section>
 
         <footer class="py-12 text-center text-slate-600 text-sm font-medium tracking-widest uppercase">
-            <p>Made with ❤️ & ☕ for Gunjan</p>
+            <!-- SECRET TRIGGER: Double Click text below -->
+            <p id="admin-trigger" class="cursor-pointer hover:text-white transition-colors select-none">Made with ❤️ for
+                Gunjan</p>
         </footer>
 
     </main>
 
-    <!-- LIGHTBOX MODAL -->
+    <!-- LIGHTBOX -->
     <div id="lightbox"
         class="fixed inset-0 z-[200] bg-black/95 hidden flex flex-col justify-center items-center p-4 opacity-0 transition-opacity duration-500 backdrop-blur-sm">
         <button class="absolute top-6 right-6 text-white p-4 hover:bg-white/10 rounded-full transition-colors"
@@ -459,232 +442,158 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <script>
-        // --- CONFIGURATION ---
-        const TARGET_DATE = new Date("January 1, 2026 00:00:00").getTime();
-        const LOVE_LETTER = [
-            "Mujhe pata hai ki words hamesha describe nahi kar sakte ki tum mere liye kitne important ho.",
-            "Par main chahta hoon ki tum ye jaano ki tum hi meri favorite thought ho, mera happiest moment ho, aur meri safest place ho.",
-            "Chalo 2026 ko hamara ab tak ka sabse beautiful chapter banate hain. I love you."
+        // --- 1. FIREBASE SETUP (For Tracking) ---
+        let db;
+        // PASTE YOUR FIREBASE CONFIG HERE
+        const firebaseConfig = {
+            // Example: apiKey: "AIzaSy...",
+            // authDomain: "guni1chauhan.firebaseapp.com",
+            // projectId: "guni1chauhan",
+            // ...
+        };
+
+        try {
+            if (Object.keys(firebaseConfig).length > 0 && firebase.apps.length === 0) {
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                firebase.auth().signInAnonymously().catch(e => console.error("Auth Error", e));
+                console.log("Firebase Connected");
+            }
+        } catch (e) {
+            console.log("Firebase config missing or error. Tracking disabled.");
+        }
+
+        // --- 2. VOICE DATA SETUP (For Lyric Glow) ---
+        // UPDATE THIS LIST WITH YOUR TIMESTAMPS
+        const VOICE_DATA = [
+            { text: "My", time: 0.5 },
+            { text: "dearest", time: 1.0 },
+            { text: "Gunjan,", time: 1.8 },
+            { text: "I", time: 2.5 },
+            { text: "know", time: 2.8 },
+            { text: "this", time: 3.2 },
+            { text: "year", time: 3.6 },
+            { text: "has", time: 4.0 },
+            { text: "been", time: 4.3 },
+            { text: "crazy,", time: 4.8 },
+            { text: "but", time: 5.5 },
+            { text: "holding", time: 6.0 },
+            { text: "your", time: 6.4 },
+            { text: "hand", time: 6.8 },
+            { text: "makes", time: 7.2 },
+            { text: "it", time: 7.5 },
+            { text: "all", time: 7.8 },
+            { text: "worth", time: 8.2 },
+            { text: "it.", time: 8.8 },
+            { text: "I", time: 9.5 },
+            { text: "love", time: 9.8 },
+            { text: "you.", time: 10.5 }
         ];
 
-        // --- 1. THREE.JS ADVANCED BACKGROUND ---
-        function initThreeJS() {
-            const scene = new THREE.Scene();
-            // Add subtle fog for depth
-            scene.fog = new THREE.FogExp2(0x0f0518, 0.002);
+        // --- CONFIG ---
+        const TARGET_DATE = new Date("January 1, 2026 00:00:00").getTime();
 
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        // --- AUDIO & VOICE SYNC LOGIC ---
+        let audioContext, analyser, dataArray;
+        let isAudioInit = false;
+        const audioElement = document.getElementById('bg-music');
+        const lyricsContainer = document.getElementById('lyrics-container');
+        let isPlaying = false;
 
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
-
-            const container = document.createElement('div');
-            Object.assign(container.style, {
-                position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
-                zIndex: -1, pointerEvents: 'none'
-            });
-            document.body.prepend(container);
-            container.appendChild(renderer.domElement);
-
-            // -- Floating Hearts (Geometry) --
-            const heartShape = new THREE.Shape();
-            const x = 0, y = 0;
-            heartShape.moveTo(x + 5, y + 5);
-            heartShape.bezierCurveTo(x + 5, y + 5, x + 4, y, x, y);
-            heartShape.bezierCurveTo(x - 6, y, x - 6, y + 7, x - 6, y + 7);
-            heartShape.bezierCurveTo(x - 6, y + 11, x - 3, y + 15.4, x + 5, y + 19);
-            heartShape.bezierCurveTo(x + 12, y + 15.4, x + 16, y + 11, x + 16, y + 7);
-            heartShape.bezierCurveTo(x + 16, y + 7, x + 16, y, x + 10, y);
-            heartShape.bezierCurveTo(x + 7, y, x + 5, y + 5, x + 5, y + 5);
-
-            const geometry = new THREE.ShapeGeometry(heartShape);
-            const hearts = [];
-
-            // Create 40 floating hearts
-            for (let i = 0; i < 40; i++) {
-                const material = new THREE.MeshBasicMaterial({
-                    color: Math.random() > 0.5 ? 0xec4899 : 0x8b5cf6, // Pink or Purple
-                    transparent: true,
-                    opacity: Math.random() * 0.4 + 0.1,
-                    side: THREE.DoubleSide
-                });
-                const mesh = new THREE.Mesh(geometry, material);
-
-                // Random positioning
-                mesh.position.set(
-                    (Math.random() - 0.5) * 40,
-                    (Math.random() - 0.5) * 40,
-                    (Math.random() - 0.5) * 40
-                );
-
-                // Random scale
-                const s = Math.random() * 0.05 + 0.02;
-                mesh.scale.set(s, -s, s); // Flip Y because shape draws upside down usually
-
-                // Custom data for animation
-                mesh.userData = {
-                    velY: Math.random() * 0.02 + 0.01,
-                    velRot: (Math.random() - 0.5) * 0.02
-                };
-
-                scene.add(mesh);
-                hearts.push(mesh);
-            }
-
-            // -- Starfield Particles --
-            const particlesGeom = new THREE.BufferGeometry();
-            const particlesCount = 1500;
-            const posArray = new Float32Array(particlesCount * 3);
-            for (let i = 0; i < particlesCount * 3; i++) posArray[i] = (Math.random() - 0.5) * 50;
-            particlesGeom.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-            const particlesMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffffff, transparent: true, opacity: 0.4 });
-            const starMesh = new THREE.Points(particlesGeom, particlesMat);
-            scene.add(starMesh);
-
-            camera.position.z = 15;
-
-            // Mouse interaction
-            let mouseX = 0, mouseY = 0;
-            document.addEventListener('mousemove', (e) => {
-                mouseX = (e.clientX - window.innerWidth / 2) * 0.001;
-                mouseY = (e.clientY - window.innerHeight / 2) * 0.001;
-            });
-
-            // Animation Loop
-            const clock = new THREE.Clock();
-            function animate() {
-                requestAnimationFrame(animate);
-                const time = clock.getElapsedTime();
-
-                // Rotate entire system gently
-                scene.rotation.y += 0.001;
-                scene.rotation.x += (mouseY - scene.rotation.x) * 0.05;
-                scene.rotation.y += (mouseX - scene.rotation.y) * 0.05;
-
-                // Animate Hearts
-                hearts.forEach(h => {
-                    h.position.y += h.userData.velY;
-                    h.rotation.z += h.userData.velRot;
-                    h.rotation.y += h.userData.velRot;
-
-                    // Audio Reactivity (Beat Pulse)
-                    let scaleBoost = 1;
-                    if (analyser) {
-                        analyser.getByteFrequencyData(dataArray);
-                        const avg = dataArray[20]; // Bass freq
-                        scaleBoost = 1 + (avg / 255) * 0.5;
-                    }
-
-                    const baseS = Math.abs(h.scale.x); // current absolute scale base
-                    // Reset if out of view
-                    if (h.position.y > 20) h.position.y = -20;
-                });
-
-                renderer.render(scene, camera);
-            }
-            animate();
-
-            // Resize handle
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
+        function initLyrics() {
+            lyricsContainer.innerHTML = '';
+            VOICE_DATA.forEach((item, index) => {
+                const span = document.createElement('span');
+                span.innerText = item.text;
+                span.className = 'lyric-word';
+                span.id = `word-${index}`;
+                lyricsContainer.appendChild(span);
             });
         }
 
-        // --- 2. AUDIO SYSTEM & VISUALIZER ---
-        let audioContext, analyser, dataArray, source;
-        let isAudioInit = false;
-        const audioElement = document.getElementById('bg-music');
-        const visualizerCanvas = document.getElementById('visualizer-canvas');
-        const visCtx = visualizerCanvas.getContext('2d');
+        function updateLyrics() {
+            if (!isPlaying) return;
+            const currentTime = audioElement.currentTime;
+
+            VOICE_DATA.forEach((item, index) => {
+                const span = document.getElementById(`word-${index}`);
+                if (currentTime >= item.time) {
+                    const nextTime = VOICE_DATA[index + 1] ? VOICE_DATA[index + 1].time : item.time + 1;
+                    if (currentTime < nextTime) {
+                        span.className = 'lyric-word lyric-active';
+                    } else {
+                        span.className = 'lyric-word lyric-passed';
+                    }
+                } else {
+                    span.className = 'lyric-word';
+                }
+            });
+            requestAnimationFrame(updateLyrics);
+        }
 
         function initAudio() {
             if (isAudioInit) return;
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             audioContext = new AudioContext();
             analyser = audioContext.createAnalyser();
-            source = audioContext.createMediaElementSource(audioElement);
+            const source = audioContext.createMediaElementSource(audioElement);
             source.connect(analyser);
             analyser.connect(audioContext.destination);
-            analyser.fftSize = 128; // Lower for chunkier bars
+            analyser.fftSize = 128;
             dataArray = new Uint8Array(analyser.frequencyBinCount);
             isAudioInit = true;
-            resizeVisualizer();
+
+            // Visualizer Init
+            const canvas = document.getElementById('visualizer-canvas');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
             drawVisualizer();
         }
-
-        function resizeVisualizer() {
-            visualizerCanvas.width = visualizerCanvas.offsetWidth;
-            visualizerCanvas.height = visualizerCanvas.offsetHeight;
-        }
-        window.addEventListener('resize', resizeVisualizer);
 
         function drawVisualizer() {
             requestAnimationFrame(drawVisualizer);
             if (!analyser) return;
-
+            const canvas = document.getElementById('visualizer-canvas');
+            const ctx = canvas.getContext('2d');
             analyser.getByteFrequencyData(dataArray);
-            visCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const barWidth = (visualizerCanvas.width / dataArray.length) * 2.5;
-            let barHeight;
+            const barWidth = (canvas.width / dataArray.length) * 2.5;
             let x = 0;
-
             for (let i = 0; i < dataArray.length; i++) {
-                barHeight = dataArray[i] / 2; // Scale
-                // Gradient Bars
-                const gradient = visCtx.createLinearGradient(0, 0, 0, visualizerCanvas.height);
-                gradient.addColorStop(0, '#ec4899'); // Pink
+                const barHeight = dataArray[i] / 2;
+                const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                gradient.addColorStop(0, '#ec4899');
                 gradient.addColorStop(1, 'transparent');
-
-                visCtx.fillStyle = gradient;
-                // Draw rounded rect equivalent
-                visCtx.fillRect(x, visualizerCanvas.height - barHeight, barWidth - 2, barHeight);
+                ctx.fillStyle = gradient;
+                ctx.fillRect(x, canvas.height - barHeight, barWidth - 2, barHeight);
                 x += barWidth;
             }
         }
 
-        // --- 3. LOGIC CONTROLLERS ---
-
-        // Entrance Logic
-        const overlay = document.getElementById('entrance-overlay');
+        // --- CONTROLLERS ---
         const enterBtn = document.getElementById('enter-btn');
+        const overlay = document.getElementById('entrance-overlay');
         const controlsUI = document.getElementById('controls-ui');
-        let isPlaying = false;
 
         enterBtn.addEventListener('click', () => {
             initAudio();
             toggleMusic();
             overlay.classList.add('opacity-0', 'pointer-events-none');
             controlsUI.classList.remove('opacity-0');
-
-            // Celebration Confetti
+            // Confetti
             var duration = 3 * 1000;
             var end = Date.now() + duration;
             (function frame() {
-                confetti({
-                    particleCount: 5,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0 },
-                    colors: ['#ec4899', '#8b5cf6']
-                });
-                confetti({
-                    particleCount: 5,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1 },
-                    colors: ['#ec4899', '#8b5cf6']
-                });
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ec4899', '#8b5cf6'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ec4899', '#8b5cf6'] });
                 if (Date.now() < end) requestAnimationFrame(frame);
             }());
         });
 
         function toggleMusic() {
             if (!isAudioInit) initAudio();
-            if (audioContext.state === 'suspended') audioContext.resume();
+            if (audioContext && audioContext.state === 'suspended') audioContext.resume();
 
             const musicIcon = document.getElementById('music-icon');
             const playerIcon = document.getElementById('player-icon');
@@ -699,192 +608,163 @@
                 musicIcon.innerText = 'music_note';
                 if (playerIcon) playerIcon.innerText = 'pause';
                 isPlaying = true;
+
+                // Initialize Lyrics logic
+                if (document.getElementById('lyrics-container').children.length === 1) {
+                    initLyrics();
+                }
+                updateLyrics();
             }
         }
         document.getElementById('music-toggle').addEventListener('click', toggleMusic);
 
-        // --- 4. INTERACTION EFFECTS ---
+        // --- SEND LOVE & TRACKING ---
+        async function sendLove() {
+            // Visuals
+            const defaults = { origin: { y: 0.9, x: 0.9 }, spread: 30, startVelocity: 40, scalar: 2 };
+            confetti({ ...defaults, particleCount: 20, shapes: ['heart'], colors: ['#ec4899', '#ef4444'] });
 
-        // Heart Trail Cursor
-        const cursorCanvas = document.getElementById('cursor-canvas');
-        const ctx = cursorCanvas.getContext('2d');
-        let width, height;
-        let particles = [];
-
-        function initCursor() {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            cursorCanvas.width = width;
-            cursorCanvas.height = height;
+            // Database Update
+            if (db) {
+                const docRef = db.collection('love_clicks').doc('summary');
+                try {
+                    await db.runTransaction(async (transaction) => {
+                        const doc = await transaction.get(docRef);
+                        if (!doc.exists) {
+                            transaction.set(docRef, { count: 1 });
+                        } else {
+                            transaction.update(docRef, { count: (doc.data().count || 0) + 1 });
+                        }
+                    });
+                    console.log("Love Sent & Tracked!");
+                } catch (e) { console.error("Tracking failed", e); }
+            }
         }
-        window.addEventListener('resize', initCursor);
-        initCursor();
 
-        document.addEventListener('mousemove', (e) => {
-            // Add particle
-            particles.push({
-                x: e.clientX,
-                y: e.clientY,
-                size: Math.random() * 8 + 5,
-                color: `hsl(${Math.random() * 60 + 280}, 100%, 70%)`, // Purple/Pink Hue
-                life: 1
-            });
+        // --- ADMIN TRIGGER ---
+        document.getElementById('admin-trigger').addEventListener('dblclick', async () => {
+            document.getElementById('admin-modal').style.display = 'flex';
+            if (db) {
+                const doc = await db.collection('love_clicks').doc('summary').get();
+                document.getElementById('admin-count').innerText = doc.exists ? doc.data().count : "0";
+            }
         });
 
+        // --- THREE.JS BACKGROUND (Preserved) ---
+        function initThreeJS() {
+            const scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x0f0518, 0.002);
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            const container = document.createElement('div');
+            container.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;';
+            document.body.prepend(container);
+            container.appendChild(renderer.domElement);
+
+            // Hearts
+            const heartShape = new THREE.Shape();
+            const x = 0, y = 0;
+            heartShape.moveTo(x + 5, y + 5);
+            heartShape.bezierCurveTo(x + 5, y + 5, x + 4, y, x, y);
+            heartShape.bezierCurveTo(x - 6, y, x - 6, y + 7, x - 6, y + 7);
+            heartShape.bezierCurveTo(x - 6, y + 11, x - 3, y + 15.4, x + 5, y + 19);
+            heartShape.bezierCurveTo(x + 12, y + 15.4, x + 16, y + 11, x + 16, y + 7);
+            heartShape.bezierCurveTo(x + 16, y + 7, x + 16, y, x + 10, y);
+            heartShape.bezierCurveTo(x + 7, y, x + 5, y + 5, x + 5, y + 5);
+            const geometry = new THREE.ShapeGeometry(heartShape);
+            const hearts = [];
+            for (let i = 0; i < 40; i++) {
+                const material = new THREE.MeshBasicMaterial({ color: Math.random() > 0.5 ? 0xec4899 : 0x8b5cf6, transparent: true, opacity: Math.random() * 0.4 + 0.1, side: THREE.DoubleSide });
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.position.set((Math.random() - 0.5) * 40, (Math.random() - 0.5) * 40, (Math.random() - 0.5) * 40);
+                const s = Math.random() * 0.05 + 0.02;
+                mesh.scale.set(s, -s, s);
+                mesh.userData = { velY: Math.random() * 0.02 + 0.01, velRot: (Math.random() - 0.5) * 0.02 };
+                scene.add(mesh);
+                hearts.push(mesh);
+            }
+
+            // Stars
+            const pGeom = new THREE.BufferGeometry();
+            const pCount = 1500;
+            const pPos = new Float32Array(pCount * 3);
+            for (let i = 0; i < pCount * 3; i++) pPos[i] = (Math.random() - 0.5) * 50;
+            pGeom.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+            const pMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffffff, transparent: true, opacity: 0.4 });
+            const stars = new THREE.Points(pGeom, pMat);
+            scene.add(stars);
+
+            camera.position.z = 15;
+            let mouseX = 0, mouseY = 0;
+            document.addEventListener('mousemove', (e) => { mouseX = (e.clientX - window.innerWidth / 2) * 0.001; mouseY = (e.clientY - window.innerHeight / 2) * 0.001; });
+
+            const clock = new THREE.Clock();
+            function animate() {
+                requestAnimationFrame(animate);
+                const time = clock.getElapsedTime();
+                scene.rotation.y += 0.001;
+                scene.rotation.x += (mouseY - scene.rotation.x) * 0.05;
+                scene.rotation.y += (mouseX - scene.rotation.y) * 0.05;
+                hearts.forEach(h => {
+                    h.position.y += h.userData.velY;
+                    h.rotation.z += h.userData.velRot;
+                    h.rotation.y += h.userData.velRot;
+                    if (h.position.y > 20) h.position.y = -20;
+                });
+                renderer.render(scene, camera);
+            }
+            animate();
+            window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
+        }
+        initThreeJS();
+
+        // --- MOUSE CURSOR ---
+        const cursorCanvas = document.getElementById('cursor-canvas');
+        const ctx = cursorCanvas.getContext('2d');
+        let width, height, particles = [];
+        function initCursor() { width = window.innerWidth; height = window.innerHeight; cursorCanvas.width = width; cursorCanvas.height = height; }
+        window.addEventListener('resize', initCursor); initCursor();
+        document.addEventListener('mousemove', (e) => { particles.push({ x: e.clientX, y: e.clientY, size: Math.random() * 8 + 5, color: `hsl(${Math.random() * 60 + 280}, 100%, 70%)`, life: 1 }); });
         function animateCursor() {
             ctx.clearRect(0, 0, width, height);
             for (let i = 0; i < particles.length; i++) {
                 let p = particles[i];
-                ctx.fillStyle = p.color;
-                ctx.globalAlpha = p.life;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fill();
-
-                p.life -= 0.05;
-                p.y += 1; // Fall down slightly
-                if (p.life <= 0) {
-                    particles.splice(i, 1);
-                    i--;
-                }
+                ctx.fillStyle = p.color; ctx.globalAlpha = p.life;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
+                p.life -= 0.05; p.y += 1;
+                if (p.life <= 0) { particles.splice(i, 1); i--; }
             }
             requestAnimationFrame(animateCursor);
         }
         animateCursor();
 
-        // 3D Tilt Effect for Cards
-        document.querySelectorAll('.tilt-card').forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const cx = rect.width / 2;
-                const cy = rect.height / 2;
-
-                const rotateX = ((y - cy) / cy) * -10;
-                const rotateY = ((x - cx) / cx) * 10;
-
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-            });
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
-            });
-        });
-
-        // Typewriter Effect
-        const typeWriterElement = document.getElementById('typewriter-text');
-        let textIndex = 0;
-        let charIndex = 0;
-        let isTyping = false;
-
-        function typeWriter() {
-            if (textIndex < LOVE_LETTER.length) {
-                if (charIndex < LOVE_LETTER[textIndex].length) {
-                    // Start new paragraph if needed
-                    if (charIndex === 0) typeWriterElement.innerHTML += (textIndex > 0 ? "<br><br>" : "");
-
-                    typeWriterElement.innerHTML += LOVE_LETTER[textIndex].charAt(charIndex);
-                    charIndex++;
-                    setTimeout(typeWriter, 40);
-                } else {
-                    textIndex++;
-                    charIndex = 0;
-                    setTimeout(typeWriter, 500); // Pause between sentences
-                }
-            } else {
-                typeWriterElement.classList.remove('typing-cursor');
-            }
+        // --- MISC UTILS ---
+        function scrollToGallery() { document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' }); }
+        function openLightbox(el) {
+            document.getElementById('lightbox-img').src = el.querySelector('img').src;
+            document.getElementById('lightbox-caption').innerText = el.querySelector('p').innerText; // Fix caption selector
+            const lb = document.getElementById('lightbox'); lb.classList.remove('hidden');
+            setTimeout(() => { lb.classList.remove('opacity-0'); document.getElementById('lightbox-img').classList.remove('scale-95'); document.getElementById('lightbox-img').classList.add('scale-100'); }, 10);
+        }
+        function closeLightbox() {
+            const lb = document.getElementById('lightbox'); lb.classList.add('opacity-0');
+            document.getElementById('lightbox-img').classList.add('scale-95');
+            setTimeout(() => lb.classList.add('hidden'), 500);
         }
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !isTyping) {
-                    isTyping = true;
-                    typeWriterElement.classList.remove('hidden');
-                    typeWriterElement.classList.add('typing-cursor');
-                    typeWriter();
-                }
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('reveal-visible');
-                }
-            });
-        }, { threshold: 0.3 });
-
+        const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('reveal-visible'); }); }, { threshold: 0.1 });
         document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
 
-
-        // Lightbox Logic
-        const lightbox = document.getElementById('lightbox');
-        const lbImg = document.getElementById('lightbox-img');
-        const lbCap = document.getElementById('lightbox-caption');
-
-        function openLightbox(el) {
-            const img = el.querySelector('img');
-            const title = el.querySelector('p.font-handwriting').innerText;
-            lbImg.src = img.src;
-            lbCap.innerText = title;
-            lightbox.classList.remove('hidden');
-            setTimeout(() => {
-                lightbox.classList.remove('opacity-0');
-                lbImg.classList.remove('scale-95');
-                lbImg.classList.add('scale-100');
-            }, 10);
-        }
-
-        function closeLightbox() {
-            lightbox.classList.add('opacity-0');
-            lbImg.classList.add('scale-95');
-            lbImg.classList.remove('scale-100');
-            setTimeout(() => lightbox.classList.add('hidden'), 500);
-        }
-
-        // Send Love Logic
-        function sendLove() {
-            const defaults = { origin: { y: 0.9, x: 0.9 }, spread: 30, startVelocity: 40, scalar: 2 };
-            const particleCount = 20;
-
-            // Hearts
-            confetti({ ...defaults, particleCount, shapes: ['heart'], colors: ['#ec4899', '#ef4444'] });
-
-            // Emojis
-            const emojis = ['😘', '💖', '😍', '✨'];
-            emojis.forEach(emoji => {
-                const shape = confetti.shapeFromText({ text: emoji, scalar: 3 });
-                confetti({
-                    ...defaults,
-                    particleCount: 5,
-                    shapes: [shape],
-                    scalar: 3,
-                    gravity: 0.5,
-                    drift: -1
-                });
-            });
-        }
-
-        // Countdown Logic
         function updateTimer() {
-            const now = new Date().getTime();
-            const dist = TARGET_DATE - now;
-
-            if (dist < 0) {
-                document.getElementById('days').innerText = "00"; return;
-            }
-
-            const d = Math.floor(dist / (1000 * 60 * 60 * 24));
-            const h = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((dist % (1000 * 60)) / 1000);
-
-            document.getElementById('days').innerText = String(d).padStart(2, '0');
-            document.getElementById('hours').innerText = String(h).padStart(2, '0');
-            document.getElementById('minutes').innerText = String(m).padStart(2, '0');
-            document.getElementById('seconds').innerText = String(s).padStart(2, '0');
+            const now = new Date().getTime(), dist = TARGET_DATE - now;
+            if (dist < 0) { document.getElementById('days').innerText = "00"; return; }
+            document.getElementById('days').innerText = String(Math.floor(dist / (1000 * 60 * 60 * 24))).padStart(2, '0');
+            document.getElementById('hours').innerText = String(Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+            document.getElementById('minutes').innerText = String(Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+            document.getElementById('seconds').innerText = String(Math.floor((dist % (1000 * 60)) / 1000)).padStart(2, '0');
         }
-        setInterval(updateTimer, 1000);
-        updateTimer();
-
-        // Start ThreeJS
-        initThreeJS();
+        setInterval(updateTimer, 1000); updateTimer();
 
     </script>
 </body>
