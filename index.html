@@ -117,23 +117,57 @@
         .hide-scrollbar::-webkit-scrollbar {
             display: none;
         }
+
+        /* Scroll Animations */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+
+        .reveal-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 
 <body class="bg-dark text-white font-sans overflow-x-hidden antialiased selection:bg-primary selection:text-white">
+
+    <!-- Entrance Overlay -->
+    <div id="entrance-overlay"
+        class="fixed inset-0 z-[100] bg-dark flex flex-col items-center justify-center transition-opacity duration-1000">
+        <div class="text-center space-y-8 p-6">
+            <h1
+                class="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary animate-pulse-slow font-handwriting">
+                For You, Gunjan
+            </h1>
+            <p class="text-slate-400 text-lg">I made something special...</p>
+            <button id="enter-btn"
+                class="group relative px-8 py-4 bg-white/5 backdrop-blur-md rounded-full border border-white/10 hover:border-primary/50 transition-all duration-300 hover:scale-110 overflow-hidden">
+                <div
+                    class="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity">
+                </div>
+                <span class="relative z-10 flex items-center gap-2 font-bold text-white">
+                    <span class="material-symbols-outlined">favorite</span>
+                    OPEN GIFT
+                </span>
+            </button>
+        </div>
+    </div>
 
     <!-- Custom Cursor Canvas -->
     <canvas id="cursor-canvas" class="cursor-trail"></canvas>
 
     <!-- Audio Element (Hidden) -->
     <!-- USER INSTRUCTION: Replace 'assets/our-song.mp3' with your actual audio file path -->
-    <audio id="bg-music" loop>
+    <audio id="bg-music" loop crossorigin="anonymous">
         <source src="assets/mine.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
-    <!-- Floating Music Toggle -->
-    <div class="fixed top-6 right-6 z-50">
+    <!-- Floating Music Toggle (Initially Hidden) -->
+    <div class="fixed top-6 right-6 z-50 opacity-0 transition-opacity duration-1000" id="music-controls">
         <button id="music-toggle"
             class="glass-panel text-white p-3 rounded-full hover:bg-primary/20 transition-all duration-300 shadow-lg group">
             <span class="material-symbols-outlined group-hover:scale-110 transition-transform"
@@ -216,7 +250,7 @@
 
         <!-- SECTION 2: GALLERY -->
         <section id="gallery" class="w-full py-20 px-4 md:px-8 bg-dark-surface/30 relative">
-            <div class="max-w-6xl mx-auto">
+            <div class="max-w-6xl mx-auto reveal-on-scroll">
                 <div class="flex flex-col items-center mb-12 text-center">
                     <span class="text-secondary font-handwriting text-3xl mb-2 transformation -rotate-3">Unforgettable
                         Moments</span>
@@ -318,7 +352,7 @@
         </section>
 
         <!-- SECTION 3: LETTER & AUDIO -->
-        <section class="w-full py-20 px-6 flex justify-center items-center min-h-[80vh] relative">
+        <section class="w-full py-20 px-6 flex justify-center items-center min-h-[80vh] relative reveal-on-scroll">
             <!-- Decorative Glow -->
             <div class="absolute inset-0 overflow-hidden pointer-events-none">
                 <div
@@ -500,15 +534,40 @@
             const clock = new THREE.Clock();
             function animate() {
                 const elapsedTime = clock.getElapsedTime();
+
+                // Beat Detection / Reactivity
+                let beatScale = 1;
+                if (analyser && isAudioSetup) {
+                    analyser.getByteFrequencyData(dataArray);
+                    // Average of lower frequencies (Bass)
+                    let sum = 0;
+                    for (let i = 0; i < 50; i++) {
+                        sum += dataArray[i];
+                    }
+                    const average = sum / 50;
+                    beatScale = 1 + (average / 256) * 0.5; // Scale between 1.0 and 1.5
+                }
+
                 particlesMesh.rotation.y = elapsedTime * 0.05;
                 particlesMesh.rotation.x = mouseY * 0.0001;
                 particlesMesh.rotation.y += mouseX * 0.0001;
 
+                // Pulse particles slightly
+                particlesMesh.scale.setScalar(1 + (beatScale - 1) * 0.2);
+
                 hearts.forEach(heart => {
-                    heart.position.y -= heart.userData.velocity;
+                    heart.position.y -= heart.userData.velocity * beatScale; // Move faster on beat
                     heart.rotation.x += heart.userData.rotSpeedX;
                     heart.rotation.y += heart.userData.rotSpeedY;
                     heart.rotation.z += heart.userData.rotSpeedZ;
+
+                    // Beat Pulse for hearts
+                    const baseScale = heart.userData.baseScale || heart.scale.x;
+                    if (!heart.userData.baseScale) heart.userData.baseScale = baseScale;
+
+                    const targetScale = heart.userData.baseScale * beatScale;
+                    heart.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
+
                     if (heart.position.y < -10) {
                         heart.position.y = 10 + Math.random() * 5;
                         heart.position.x = (Math.random() - 0.5) * 20;
@@ -560,7 +619,10 @@
         updateCountdown();
 
 
-        // --- Audio Control ---
+        // --- Entrance & Audio Control ---
+        const entranceOverlay = document.getElementById('entrance-overlay');
+        const enterBtn = document.getElementById('enter-btn');
+        const musicControls = document.getElementById('music-controls');
         const audio = document.getElementById('bg-music');
         const musicToggleBtn = document.getElementById('music-toggle');
         const musicIcon = document.getElementById('music-icon');
@@ -568,7 +630,33 @@
         const playerIcon = document.getElementById('player-icon');
         let isPlaying = false;
 
+        enterBtn.addEventListener('click', () => {
+            // 1. Fade out overlay
+            entranceOverlay.classList.add('opacity-0', 'pointer-events-none');
+
+            // 2. Start Music & Audio Context
+            toggleMusic();
+
+            // 3. Show Controls
+            musicControls.classList.remove('opacity-0');
+
+            // 4. BIG Celebration
+            fireConfetti();
+            let count = 0;
+            const burst = setInterval(() => {
+                fireConfetti();
+                count++;
+                if (count > 5) clearInterval(burst);
+            }, 300);
+        });
+
         function toggleMusic() {
+            // Ensure Audio Context is ready (must be user triggered)
+            if (!isAudioSetup) setupAudioContext();
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+
             if (isPlaying) {
                 audio.pause();
                 musicIcon.innerText = 'music_off';
@@ -579,10 +667,9 @@
                     musicIcon.innerText = 'music_note';
                     playerIcon.innerText = 'pause';
                     isPlaying = true;
-                    fireConfetti(); // Celebration when music starts!
+                    if (isAudioSetup === false) setupAudioContext(); // Double check
                 }).catch(e => {
-                    console.log("Audio play failed (interaction needed): ", e);
-                    alert("Tap anywhere to allow music playback!");
+                    console.log("Audio play failed: ", e);
                 });
             }
         }
@@ -734,7 +821,23 @@
             initCustomCursor();
             initTiltEffect();
             initTypewriterEffect();
+            initScrollObserver();
         });
+
+        // --- Scroll Observer ---
+        function initScrollObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('reveal-visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+        }
 
 
         // --- 3. Custom Cursor ---
