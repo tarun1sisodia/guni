@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy New Year, Guni!</title>
+    <title>Happy New Year, Gunjan! ❤️</title>
 
-    <!-- Fonts -->
+    <!-- Fonts: Elegant Handwriting & Modern Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -25,11 +25,11 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#7f13ec',
-                        secondary: '#d946ef', // Fuchsia-500
-                        dark: '#191022',
-                        'dark-surface': '#261a30',
-                        light: '#f7f6f8'
+                        primary: '#8b5cf6', // Violet-500
+                        secondary: '#ec4899', // Pink-500
+                        dark: '#0f0518', // Deep purple-black
+                        'dark-surface': '#1e1b2e',
+                        light: '#fdf4ff'
                     },
                     fontFamily: {
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
@@ -38,11 +38,16 @@
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
                         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fade-in-up': 'fadeInUp 1s ease-out forwards',
                     },
                     keyframes: {
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
                             '50%': { transform: 'translateY(-20px)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
                         }
                     }
                 }
@@ -54,6 +59,14 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
+        /* --- Custom Styles for Advanced Effects --- */
+
+        body {
+            background-color: #0f0518;
+            cursor: none;
+            /* Hide default cursor for custom one */
+        }
+
         /* Custom Cursor */
         .cursor-trail {
             position: fixed;
@@ -76,53 +89,62 @@
             }
         }
 
-        /* Tilt Effect Perspective */
+        /* 3D Tilt Card Effect */
         .tilt-card {
             transform-style: preserve-3d;
             transition: transform 0.1s ease-out;
-            /* Fast reaction */
+            /* Super smooth reaction */
+            will-change: transform;
         }
 
+        .tilt-content {
+            transform: translateZ(20px);
+            /* Pop out effect */
+        }
+
+        /* Glassmorphism */
         .glass-panel {
-            background: rgba(38, 26, 48, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(30, 27, 46, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
         .text-gradient {
-            background: linear-gradient(to right, #7f13ec, #d946ef);
+            background: linear-gradient(to right, #a78bfa, #f472b6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
 
         ::-webkit-scrollbar-track {
-            background: #191022;
+            background: #0f0518;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #3c2a4d;
-            border-radius: 4px;
+            background: #4c1d95;
+            border-radius: 10px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #7f13ec;
+            background: #6d28d9;
         }
 
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-
-        /* Scroll Animations */
+        /* Animation Classes */
         .reveal-on-scroll {
             opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+            transform: translateY(40px);
+            transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
         .reveal-visible {
@@ -132,230 +154,228 @@
     </style>
 </head>
 
-<body class="bg-dark text-white font-sans overflow-x-hidden antialiased selection:bg-primary selection:text-white">
+<body class="text-white font-sans overflow-x-hidden antialiased selection:bg-secondary selection:text-white">
 
-    <!-- Entrance Overlay -->
+    <!-- 1. ENTRANCE OVERLAY (Required for Audio Autoplay Policy) -->
     <div id="entrance-overlay"
         class="fixed inset-0 z-[100] bg-dark flex flex-col items-center justify-center transition-opacity duration-1000">
-        <div class="text-center space-y-8 p-6">
+        <div class="text-center space-y-8 p-6 relative z-10">
+            <!-- Pulsing Heart Behind -->
+            <div
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-secondary/20 rounded-full blur-[60px] animate-pulse-slow">
+            </div>
+
             <h1
-                class="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary animate-pulse-slow font-handwriting">
+                class="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary font-handwriting animate-float">
                 For You, Gunjan
             </h1>
-            <p class="text-slate-400 text-lg">I made something special...</p>
+            <p class="text-slate-400 text-lg font-light tracking-wide">A little surprise for our New Year...</p>
+
             <button id="enter-btn"
-                class="group relative px-8 py-4 bg-white/5 backdrop-blur-md rounded-full border border-white/10 hover:border-primary/50 transition-all duration-300 hover:scale-110 overflow-hidden">
+                class="group relative px-10 py-4 bg-white/5 backdrop-blur-md rounded-full border border-white/10 hover:border-secondary/50 transition-all duration-500 hover:scale-110 overflow-hidden shadow-2xl shadow-secondary/20">
                 <div
-                    class="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity">
+                    class="absolute inset-0 bg-gradient-to-r from-primary/40 to-secondary/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                 </div>
-                <span class="relative z-10 flex items-center gap-2 font-bold text-white">
-                    <span class="material-symbols-outlined">favorite</span>
-                    OPEN GIFT
+                <span
+                    class="relative z-10 flex items-center gap-3 font-bold text-white tracking-widest text-sm uppercase">
+                    <span
+                        class="material-symbols-outlined filled text-pink-400 group-hover:animate-ping">favorite</span>
+                    Open Gift
                 </span>
             </button>
         </div>
     </div>
 
-    <!-- Custom Cursor Canvas -->
+    <!-- 2. CUSTOM CURSOR CANVAS -->
     <canvas id="cursor-canvas" class="cursor-trail"></canvas>
 
-    <!-- Audio Element (Hidden) -->
-    <!-- USER INSTRUCTION: Replace 'assets/our-song.mp3' with your actual audio file path -->
+    <!-- 3. AUDIO ELEMENTS -->
+    <!-- REPLACE 'assets/mine.mp3' with your actual file path -->
     <audio id="bg-music" loop crossorigin="anonymous">
         <source src="assets/mine.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
     </audio>
 
-    <!-- Floating Music Toggle (Initially Hidden) -->
-    <div class="fixed top-6 right-6 z-50 opacity-0 transition-opacity duration-1000" id="music-controls">
+    <!-- Floating Controls -->
+    <div class="fixed top-6 right-6 z-50 flex gap-4 opacity-0 transition-opacity duration-1000" id="controls-ui">
         <button id="music-toggle"
-            class="glass-panel text-white p-3 rounded-full hover:bg-primary/20 transition-all duration-300 shadow-lg group">
-            <span class="material-symbols-outlined group-hover:scale-110 transition-transform"
+            class="glass-panel text-white p-3 rounded-full hover:bg-white/10 transition-all duration-300 shadow-lg group">
+            <span class="material-symbols-outlined group-hover:rotate-12 transition-transform"
                 id="music-icon">music_note</span>
         </button>
     </div>
 
-    <!-- Floating Love Button -->
-    <div class="fixed bottom-6 right-6 z-50">
+    <!-- 4. FLOATING ACTION BUTTON (Send Love) -->
+    <div class="fixed bottom-8 right-6 z-50">
         <button onclick="sendLove()"
-            class="group w-14 h-14 bg-gradient-to-tr from-pink-500 to-red-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-pink-500/30 hover:shadow-pink-500/50 hover:scale-110 transition-all duration-300">
-            <span class="material-symbols-outlined text-3xl animate-pulse">favorite</span>
+            class="group relative w-16 h-16 bg-gradient-to-tr from-pink-600 to-purple-600 rounded-full flex items-center justify-center text-white shadow-xl shadow-pink-600/30 hover:shadow-pink-600/60 hover:scale-110 transition-all duration-300">
+            <span class="material-symbols-outlined text-3xl animate-bounce">favorite</span>
+            <!-- Tooltip -->
             <span
-                class="absolute -top-10 scale-0 group-hover:scale-100 transition-transform bg-white text-pink-600 text-xs font-bold px-2 py-1 rounded-lg whitespace-nowrap">
+                class="absolute right-full mr-4 top-1/2 -translate-y-1/2 scale-0 group-hover:scale-100 origin-right transition-transform bg-white/90 text-purple-900 text-xs font-bold px-3 py-1.5 rounded-lg whitespace-nowrap shadow-lg">
                 Send Love!
             </span>
         </button>
     </div>
 
-    <!-- Main Container -->
-    <main class="min-h-screen flex flex-col items-center">
+    <!-- MAIN CONTENT -->
+    <main class="min-h-screen flex flex-col items-center relative">
 
         <!-- SECTION 1: HERO & COUNTDOWN -->
         <section
             class="min-h-screen w-full flex flex-col justify-center items-center relative overflow-hidden px-6 pt-20 pb-10">
-            <!-- Background Elements -->
+            <!-- Background Glows -->
             <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
                 <div
-                    class="absolute top-[10%] left-[5%] w-72 h-72 bg-primary/20 rounded-full blur-[100px] animate-pulse-slow">
+                    class="absolute top-[20%] left-[10%] w-96 h-96 bg-primary/20 rounded-full blur-[120px] animate-pulse-slow">
                 </div>
-                <div class="absolute bottom-[10%] right-[5%] w-96 h-96 bg-secondary/10 rounded-full blur-[120px] animate-pulse-slow"
+                <div class="absolute bottom-[20%] right-[10%] w-[500px] h-[500px] bg-secondary/10 rounded-full blur-[150px] animate-pulse-slow"
                     style="animation-delay: 2s;"></div>
             </div>
 
-            <div class="z-10 text-center max-w-2xl mx-auto flex flex-col items-center gap-8">
+            <div class="z-10 text-center max-w-4xl mx-auto flex flex-col items-center gap-10">
 
-                <!-- Tag -->
+                <!-- Animated Tag -->
                 <div
-                    class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 animate-fade-in-up">
-                    <span class="relative flex h-2.5 w-2.5">
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm animate-fade-in-up">
+                    <span class="relative flex h-3 w-3">
                         <span
-                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-secondary"></span>
                     </span>
-                    <span class="text-primary text-xs font-bold uppercase tracking-widest">Our New Year</span>
+                    <span class="text-secondary text-xs font-bold uppercase tracking-widest">Beginning 2026
+                        Together</span>
                 </div>
 
-                <!-- Text -->
-                <div class="space-y-4">
-                    <h1 class="text-4xl md:text-7xl font-black leading-tight tracking-tight">
+                <!-- Main Title -->
+                <div class="space-y-6 animate-fade-in-up" style="animation-delay: 0.2s;">
+                    <h1 class="text-5xl md:text-8xl font-black leading-tight tracking-tight drop-shadow-2xl">
                         Happy New Year,<br>
-                        <span class="text-gradient">Gunjan!</span>
+                        <span class="text-gradient font-handwriting py-2 block md:inline">Gunjan!</span>
                     </h1>
-                    <p class="text-slate-400 text-lg md:text-xl font-medium max-w-lg mx-auto leading-relaxed">
-                        To the one who makes every moment worth it. Here's to us and another beautiful year ahead.
+                    <p class="text-slate-300 text-lg md:text-2xl font-light max-w-2xl mx-auto leading-relaxed">
+                        To the girl who holds my heart, may this year bring us closer, happier, and even more in love.
                     </p>
                 </div>
 
-                <!-- Countdown -->
-                <div class="glass-panel p-4 md:p-6 rounded-2xl w-full max-w-md animate-float">
-                    <p class="text-xs text-slate-400 uppercase tracking-widest font-bold mb-4">Countdown to 2026</p>
-                    <!-- Example Year -->
-                    <div class="grid grid-cols-4 gap-2 md:gap-4 text-center">
-                        <div class="flex flex-col gap-1">
-                            <span class="text-2xl md:text-3xl font-bold font-mono" id="days">00</span>
-                            <span class="text-[10px] text-slate-500 uppercase font-bold">Days</span>
+                <!-- Glass Countdown -->
+                <div class="glass-panel p-6 md:p-8 rounded-3xl w-full max-w-2xl animate-fade-in-up hover:border-secondary/30 transition-colors duration-500"
+                    style="animation-delay: 0.4s;">
+                    <div class="grid grid-cols-4 gap-4 text-center divide-x divide-white/10">
+                        <div class="flex flex-col">
+                            <span class="text-3xl md:text-5xl font-bold font-mono text-white" id="days">00</span>
+                            <span
+                                class="text-[10px] md:text-xs text-secondary uppercase font-bold tracking-widest mt-2">Days</span>
                         </div>
-                        <div class="flex flex-col gap-1">
-                            <span class="text-2xl md:text-3xl font-bold font-mono" id="hours">00</span>
-                            <span class="text-[10px] text-slate-500 uppercase font-bold">Hrs</span>
+                        <div class="flex flex-col">
+                            <span class="text-3xl md:text-5xl font-bold font-mono text-white" id="hours">00</span>
+                            <span
+                                class="text-[10px] md:text-xs text-secondary uppercase font-bold tracking-widest mt-2">Hours</span>
                         </div>
-                        <div class="flex flex-col gap-1">
-                            <span class="text-2xl md:text-3xl font-bold font-mono" id="minutes">00</span>
-                            <span class="text-[10px] text-slate-500 uppercase font-bold">Mins</span>
+                        <div class="flex flex-col">
+                            <span class="text-3xl md:text-5xl font-bold font-mono text-white" id="minutes">00</span>
+                            <span
+                                class="text-[10px] md:text-xs text-secondary uppercase font-bold tracking-widest mt-2">Mins</span>
                         </div>
-                        <div class="flex flex-col gap-1">
-                            <span class="text-2xl md:text-3xl font-bold font-mono text-primary" id="seconds">00</span>
-                            <span class="text-[10px] text-slate-500 uppercase font-bold">Secs</span>
+                        <div class="flex flex-col">
+                            <span class="text-3xl md:text-5xl font-bold font-mono text-secondary animate-pulse"
+                                id="seconds">00</span>
+                            <span
+                                class="text-[10px] md:text-xs text-secondary uppercase font-bold tracking-widest mt-2">Secs</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- CTA -->
+                <!-- Scroll Down -->
                 <button onclick="scrollToGallery()"
-                    class="mt-4 group flex items-center gap-3 bg-gradient-to-r from-primary to-secondary text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all hover:-translate-y-1">
-                    <span>Open Memories</span>
-                    <span
-                        class="material-symbols-outlined group-hover:translate-y-1 transition-transform">keyboard_arrow_down</span>
+                    class="mt-8 animate-bounce text-slate-500 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-4xl">keyboard_double_arrow_down</span>
                 </button>
             </div>
         </section>
 
-        <!-- SECTION 2: GALLERY -->
-        <section id="gallery" class="w-full py-20 px-4 md:px-8 bg-dark-surface/30 relative">
-            <div class="max-w-6xl mx-auto reveal-on-scroll">
-                <div class="flex flex-col items-center mb-12 text-center">
-                    <span class="text-secondary font-handwriting text-3xl mb-2 transformation -rotate-3">Unforgettable
+        <!-- SECTION 2: 3D MEMORY GALLERY -->
+        <section id="gallery" class="w-full py-32 px-4 md:px-8 relative z-10">
+            <div class="max-w-7xl mx-auto reveal-on-scroll">
+                <div class="flex flex-col items-center mb-16 text-center">
+                    <span
+                        class="text-secondary font-handwriting text-4xl mb-3 transform -rotate-3 inline-block">Unforgettable
                         Moments</span>
-                    <h2 class="text-3xl md:text-4xl font-bold">Our Journey Together</h2>
+                    <h2
+                        class="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-slate-500">
+                        Our Journey So Far</h2>
                 </div>
 
-                <!-- Masonry Grid -->
-                <div class="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+                <!-- Masonry Layout -->
+                <div class="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
 
-                    <!-- Item 1 -->
-                    <!-- USER INSTRUCTION: Replace existing src with your image paths -->
-                    <div class="break-inside-avoid relative group rounded-2xl overflow-hidden cursor-pointer min-h-[300px] bg-primary/10 tilt-card"
+                    <!-- Photo Card 1 -->
+                    <!-- USER: Update src="assets/img1.png" -->
+                    <div class="break-inside-avoid relative group rounded-3xl overflow-hidden cursor-none tilt-card bg-dark-surface shadow-2xl"
                         onclick="openLightbox(this)">
-                        <img src="assets/img1.png"
-                            class="w-full h-auto block object-cover transition-transform duration-700 group-hover:scale-105"
-                            alt="Memory 1">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                            <p class="font-bold text-white text-lg">First Date</p>
-                            <p class="text-sm text-slate-300">Where it all began</p>
+                        <div class="tilt-content">
+                            <img src="assets/img1.png"
+                                class="w-full h-auto block object-cover transition-transform duration-700 group-hover:scale-110"
+                                alt="Memory">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+                                <p class="font-handwriting text-3xl text-secondary mb-1">First Date</p>
+                                <p class="text-sm text-slate-300 font-medium">The moment time stood still</p>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Item 2 -->
-                    <div class="break-inside-avoid relative group rounded-2xl overflow-hidden cursor-pointer min-h-[300px] bg-primary/10 tilt-card"
+                    <!-- Photo Card 2 -->
+                    <div class="break-inside-avoid relative group rounded-3xl overflow-hidden cursor-none tilt-card bg-dark-surface shadow-2xl"
                         onclick="openLightbox(this)">
-                        <img src="assets/img2.png"
-                            class="w-full h-auto block object-cover transition-transform duration-700 group-hover:scale-105"
-                            alt="Memory 2">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                            <p class="font-bold text-white text-lg">Road Trip</p>
-                            <p class="text-sm text-slate-300">Just us and the road</p>
+                        <div class="tilt-content">
+                            <img src="assets/img2.png"
+                                class="w-full h-auto block object-cover transition-transform duration-700 group-hover:scale-110"
+                                alt="Memory">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+                                <p class="font-handwriting text-3xl text-secondary mb-1">Crazy Adventures</p>
+                                <p class="text-sm text-slate-300 font-medium">Getting lost together</p>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Item 3 (Text Note) -->
+                    <!-- Quote Card -->
                     <div
-                        class="break-inside-avoid relative p-8 bg-primary/10 border border-primary/20 rounded-2xl flex flex-col justify-center items-center text-center gap-4 min-h-[200px]">
-                        <span class="material-symbols-outlined text-4xl text-primary">favorite</span>
-                        <p class="font-handwriting text-2xl text-white/90">"Every love story is beautiful, but ours is
-                            my favorite."</p>
+                        class="break-inside-avoid relative p-10 bg-gradient-to-br from-primary/20 to-secondary/20 border border-white/5 rounded-3xl flex flex-col justify-center items-center text-center gap-6 min-h-[300px] tilt-card">
+                        <span class="material-symbols-outlined text-5xl text-white/50">format_quote</span>
+                        <p class="font-handwriting text-3xl md:text-4xl text-white leading-relaxed">
+                            "In all the world, there is no heart for me like yours. In all the world, there is no love
+                            for you like mine."
+                        </p>
+                        <p class="text-sm uppercase tracking-widest text-secondary font-bold">- Us</p>
                     </div>
 
-                    <!-- Item 4 -->
-                    <div class="break-inside-avoid relative group rounded-2xl overflow-hidden cursor-pointer min-h-[300px] bg-primary/10 tilt-card"
+                    <!-- Photo Card 3 -->
+                    <div class="break-inside-avoid relative group rounded-3xl overflow-hidden cursor-none tilt-card bg-dark-surface shadow-2xl"
                         onclick="openLightbox(this)">
-                        <img src="assets/img3.png"
-                            class="w-full h-auto block object-cover transition-transform duration-700 group-hover:scale-105"
-                            alt="Memory 3">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                            <p class="font-bold text-white text-lg">Concerts</p>
-                            <p class="text-sm text-slate-300">Singing our hearts out</p>
+                        <div class="tilt-content">
+                            <img src="assets/img3.png"
+                                class="w-full h-auto block object-cover transition-transform duration-700 group-hover:scale-110"
+                                alt="Memory">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+                                <p class="font-handwriting text-3xl text-secondary mb-1">Your Smile</p>
+                                <p class="text-sm text-slate-300 font-medium">My favorite view</p>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Item 5 -->
-                    <div class="break-inside-avoid relative group rounded-2xl overflow-hidden cursor-pointer min-h-[300px] bg-primary/10 tilt-card"
+                    <!-- Photo Card 4 -->
+                    <div class="break-inside-avoid relative group rounded-3xl overflow-hidden cursor-none tilt-card bg-dark-surface shadow-2xl"
                         onclick="openLightbox(this)">
-                        <img src="assets/img4.png"
-                            class="w-full h-auto block object-cover transition-transform duration-700 group-hover:scale-105"
-                            alt="Memory 4">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                            <p class="font-bold text-white text-lg">Christmas Eve</p>
-                            <p class="text-sm text-slate-300">Cozy nights</p>
-                        </div>
-                    </div>
-
-                    <!-- Item 6 -->
-                    <div class="break-inside-avoid relative group rounded-2xl overflow-hidden cursor-pointer min-h-[300px] bg-primary/10 tilt-card"
-                        onclick="openLightbox(this)">
-                        <img src="assets/img5.png"
-                            class="w-full h-auto block object-cover transition-transform duration-700 group-hover:scale-105"
-                            alt="Memory 5">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                            <p class="font-bold text-white text-lg">Special Moment</p>
-                            <p class="text-sm text-slate-300">Unforgettable</p>
-                        </div>
-                    </div>
-
-                    <!-- Item 7 -->
-                    <div class="break-inside-avoid relative group rounded-2xl overflow-hidden cursor-pointer min-h-[300px] bg-primary/10"
-                        onclick="openLightbox(this)">
-                        <img src="assets/img6.png"
-                            class="w-full h-auto block object-cover transition-transform duration-700 group-hover:scale-105"
-                            alt="Memory 6">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                            <p class="font-bold text-white text-lg">Just Us</p>
-                            <p class="text-sm text-slate-300">Forever</p>
+                        <div class="tilt-content">
+                            <img src="assets/img4.png"
+                                class="w-full h-auto block object-cover transition-transform duration-700 group-hover:scale-110"
+                                alt="Memory">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+                                <p class="font-handwriting text-3xl text-secondary mb-1">Quiet Moments</p>
+                                <p class="text-sm text-slate-300 font-medium">Just holding hands</p>
+                            </div>
                         </div>
                     </div>
 
@@ -363,131 +383,111 @@
             </div>
         </section>
 
-        <!-- SECTION 3: LETTER & AUDIO -->
-        <section class="w-full py-20 px-6 flex justify-center items-center min-h-[80vh] relative reveal-on-scroll">
-            <!-- Decorative Glow -->
-            <div class="absolute inset-0 overflow-hidden pointer-events-none">
-                <div
-                    class="absolute top-[30%] left-[50%] -translate-x-1/2 w-full max-w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px]">
-                </div>
-            </div>
+        <!-- SECTION 3: INTERACTIVE LETTER & AUDIO VISUALIZER -->
+        <section class="w-full py-20 px-6 flex justify-center items-center min-h-[90vh] relative reveal-on-scroll">
 
             <div
-                class="glass-panel w-full max-w-2xl p-8 md:p-12 rounded-3xl relative overflow-hidden text-center flex flex-col items-center gap-8 border border-primary/20 shadow-2xl shadow-primary/10">
+                class="glass-panel w-full max-w-3xl p-8 md:p-14 rounded-[2rem] relative overflow-hidden text-center flex flex-col items-center gap-8 border-t border-white/10 shadow-2xl">
 
-                <!-- Visualizer Location -->
+                <!-- Background Audio Visualizer Canvas -->
                 <canvas id="visualizer-canvas"
-                    class="absolute bottom-0 left-0 w-full h-32 opacity-30 pointer-events-none"></canvas>
+                    class="absolute bottom-0 left-0 w-full h-48 opacity-20 pointer-events-none"></canvas>
 
+                <!-- Icon -->
                 <div
-                    class="w-16 h-16 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center text-white shadow-lg mb-2">
-                    <span class="material-symbols-outlined text-3xl">mark_email_read</span>
+                    class="w-20 h-20 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center text-white shadow-lg shadow-primary/30 animate-float">
+                    <span class="material-symbols-outlined text-4xl">local_florist</span>
                 </div>
 
-                <div class="space-y-6">
-                    <h2 class="font-handwriting text-4xl md:text-5xl text-white">To My Dearest Gunjan</h2>
-                    <div class="prose prose-invert prose-lg text-slate-300 leading-relaxed font-light min-h-[150px]">
-                        <p id="typewriter-1" class="hidden">
-                            I know things haven't always been easy, but fighting for us has been the best decision I've
-                            ever made.
-                            You are my rock, my joy, and my safe place.
-                        </p>
-                        <p id="typewriter-2" class="hidden">
-                            As we step into this New Year, I want to promise you all my love, my patience, and my best
-                            efforts.
-                            Let's make this year our masterpiece.
+                <div class="space-y-8 relative z-10">
+                    <h2 class="font-handwriting text-5xl md:text-6xl text-white drop-shadow-lg">My Promise to You</h2>
+
+                    <!-- Typewriter Container -->
+                    <div
+                        class="prose prose-invert prose-lg text-slate-200 leading-loose font-light min-h-[120px] max-w-xl mx-auto">
+                        <p id="typewriter-text" class="hidden text-xl md:text-2xl">
+                            <!-- Text injected via JS -->
                         </p>
                     </div>
                 </div>
 
-                <!-- Custom Audio Player UI -->
-                <div
-                    class="w-full bg-dark-surface/80 p-4 rounded-xl flex items-center gap-4 border border-white/5 mt-4">
+                <!-- Custom Music Player Display -->
+                <div class="w-full max-w-md bg-black/40 backdrop-blur-md p-4 rounded-2xl flex items-center gap-5 border border-white/5 hover:border-white/10 transition-colors cursor-pointer group"
+                    onclick="toggleMusic()">
                     <div
-                        class="h-12 w-12 bg-primary/20 rounded-lg flex items-center justify-center text-primary shrink-0">
-                        <span class="material-symbols-outlined animate-pulse">equalizer</span>
+                        class="h-14 w-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg group-hover:scale-105 transition-transform">
+                        <span class="material-symbols-outlined text-white animate-pulse">equalizer</span>
                     </div>
                     <div class="flex-1 text-left overflow-hidden">
-                        <p class="font-bold text-white text-sm truncate">A Message For You</p>
-                        <p class="text-xs text-slate-400">Play me ❤️</p>
+                        <p class="font-bold text-white text-base truncate group-hover:text-secondary transition-colors">
+                            Play Our Song</p>
+                        <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">Tap to Pause/Play</p>
                     </div>
-                    <button id="player-btn"
-                        class="w-10 h-10 rounded-full bg-white text-primary flex items-center justify-center hover:scale-105 transition-transform"
-                        onclick="toggleMusic()">
-                        <span class="material-symbols-outlined fill" id="player-icon">play_arrow</span>
-                    </button>
+                    <div
+                        class="w-10 h-10 rounded-full bg-white text-dark flex items-center justify-center shadow-lg group-hover:bg-secondary group-hover:text-white transition-colors">
+                        <span class="material-symbols-outlined filled" id="player-icon">play_arrow</span>
+                    </div>
                 </div>
 
-                <div class="pt-6">
-                    <div class="pt-6">
-                        <p class="font-handwriting text-4xl text-white font-bold tracking-wide drop-shadow-lg">Forever
-                            Yours,<br>Tarun</p>
-                    </div>
+                <div class="pt-8">
+                    <p class="font-handwriting text-3xl text-white/80">Forever Yours,<br><span
+                            class="text-4xl text-white font-bold">Tarun</span></p>
                 </div>
+            </div>
         </section>
 
-        <footer class="py-12 text-center text-slate-500 text-lg font-medium">
-            <p>Made with ❤️ for Gunjan</p>
+        <footer class="py-12 text-center text-slate-600 text-sm font-medium tracking-widest uppercase">
+            <p>Made with ❤️ & ☕ for Gunjan</p>
         </footer>
 
     </main>
 
-    <!-- Simple Lightbox Modal -->
+    <!-- LIGHTBOX MODAL -->
     <div id="lightbox"
-        class="fixed inset-0 z-[60] bg-black/95 hidden flex flex-col justify-center items-center p-4 opacity-0 transition-opacity duration-300">
-        <button class="absolute top-6 right-6 text-white p-2 hover:bg-white/10 rounded-full" onclick="closeLightbox()">
-            <span class="material-symbols-outlined text-3xl">close</span>
+        class="fixed inset-0 z-[200] bg-black/95 hidden flex flex-col justify-center items-center p-4 opacity-0 transition-opacity duration-500 backdrop-blur-sm">
+        <button class="absolute top-6 right-6 text-white p-4 hover:bg-white/10 rounded-full transition-colors"
+            onclick="closeLightbox()">
+            <span class="material-symbols-outlined text-4xl">close</span>
         </button>
-        <img id="lightbox-img" src="" class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl">
-        <p id="lightbox-caption" class="text-white mt-4 text-xl font-bold font-handwriting tracking-wider"></p>
+        <img id="lightbox-img" src=""
+            class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl scale-95 transition-transform duration-500">
+        <p id="lightbox-caption"
+            class="text-white mt-6 text-3xl font-handwriting text-center drop-shadow-lg text-secondary"></p>
     </div>
 
-    <!-- Scripts -->
-    <!-- Three.js Library -->
+    <!-- SCRIPTS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <script>
-        // --- Three.js Background Animation ---
+        // --- CONFIGURATION ---
+        const TARGET_DATE = new Date("January 1, 2026 00:00:00").getTime();
+        const LOVE_LETTER = [
+            "Mujhe pata hai ki words hamesha describe nahi kar sakte ki tum mere liye kitne important ho.",
+            "Par main chahta hoon ki tum ye jaano ki tum hi meri favorite thought ho, mera happiest moment ho, aur meri safest place ho.",
+            "Chalo 2026 ko hamara ab tak ka sabse beautiful chapter banate hain. I love you."
+        ];
+
+        // --- 1. THREE.JS ADVANCED BACKGROUND ---
         function initThreeJS() {
             const scene = new THREE.Scene();
+            // Add subtle fog for depth
+            scene.fog = new THREE.FogExp2(0x0f0518, 0.002);
+
             const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
 
-            // Create a canvas container fixed in background
             const container = document.createElement('div');
-            container.style.position = 'fixed';
-            container.style.top = '0';
-            container.style.left = '0';
-            container.style.width = '100%';
-            container.style.height = '100%';
-            container.style.zIndex = '-1';
-            container.style.pointerEvents = 'none'; // Allow clicks to pass through
-            container.id = 'three-bg';
+            Object.assign(container.style, {
+                position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+                zIndex: -1, pointerEvents: 'none'
+            });
             document.body.prepend(container);
             container.appendChild(renderer.domElement);
 
-            // 1. Starfield (Existing)  
-            const particlesGeometry = new THREE.BufferGeometry();
-            const particlesCount = 1000;
-            const posArray = new Float32Array(particlesCount * 3);
-            for (let i = 0; i < particlesCount * 3; i++) {
-                posArray[i] = (Math.random() - 0.5) * 15;
-            }
-            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-            const material = new THREE.PointsMaterial({
-                size: 0.02,
-                color: 0xd946ef,
-                transparent: true,
-                opacity: 0.5,
-                blending: THREE.AdditiveBlending
-            });
-            const particlesMesh = new THREE.Points(particlesGeometry, material);
-            scene.add(particlesMesh);
-
-            // 2. 3D Falling Hearts (New)
+            // -- Floating Hearts (Geometry) --
             const heartShape = new THREE.Shape();
             const x = 0, y = 0;
             heartShape.moveTo(x + 5, y + 5);
@@ -498,100 +498,94 @@
             heartShape.bezierCurveTo(x + 16, y + 7, x + 16, y, x + 10, y);
             heartShape.bezierCurveTo(x + 7, y, x + 5, y + 5, x + 5, y + 5);
 
-            const extrudeSettings = { depth: 2, bevelEnabled: true, bevelSegments: 2, steps: 2, bevelSize: 1, bevelThickness: 1 };
-            const heartGeometry = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
-            heartGeometry.scale(0.02, -0.02, 0.02);
-            heartGeometry.center();
-
+            const geometry = new THREE.ShapeGeometry(heartShape);
             const hearts = [];
-            const heartMaterials = [
-                new THREE.MeshPhongMaterial({ color: 0xff0080, shininess: 100 }), // Hot Pink
-                new THREE.MeshPhongMaterial({ color: 0xff0000, shininess: 100 }), // Red
-                new THREE.MeshPhongMaterial({ color: 0x9d00ff, shininess: 100 }), // Purple
-                new THREE.MeshPhongMaterial({ color: 0xffd700, shininess: 100 })  // Gold
-            ];
 
-            for (let i = 0; i < 50; i++) {
-                const material = heartMaterials[Math.floor(Math.random() * heartMaterials.length)];
-                const mesh = new THREE.Mesh(heartGeometry, material);
-                mesh.position.set((Math.random() - 0.5) * 20, Math.random() * 20 + 5, (Math.random() - 0.5) * 10);
-                mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
-                const scale = Math.random() * 0.5 + 0.5;
-                mesh.scale.set(scale, scale, scale);
+            // Create 40 floating hearts
+            for (let i = 0; i < 40; i++) {
+                const material = new THREE.MeshBasicMaterial({
+                    color: Math.random() > 0.5 ? 0xec4899 : 0x8b5cf6, // Pink or Purple
+                    transparent: true,
+                    opacity: Math.random() * 0.4 + 0.1,
+                    side: THREE.DoubleSide
+                });
+                const mesh = new THREE.Mesh(geometry, material);
+
+                // Random positioning
+                mesh.position.set(
+                    (Math.random() - 0.5) * 40,
+                    (Math.random() - 0.5) * 40,
+                    (Math.random() - 0.5) * 40
+                );
+
+                // Random scale
+                const s = Math.random() * 0.05 + 0.02;
+                mesh.scale.set(s, -s, s); // Flip Y because shape draws upside down usually
+
+                // Custom data for animation
                 mesh.userData = {
-                    velocity: Math.random() * 0.05 + 0.02,
-                    rotSpeedX: (Math.random() - 0.5) * 0.05,
-                    rotSpeedY: (Math.random() - 0.5) * 0.05,
-                    rotSpeedZ: (Math.random() - 0.5) * 0.05
+                    velY: Math.random() * 0.02 + 0.01,
+                    velRot: (Math.random() - 0.5) * 0.02
                 };
+
                 scene.add(mesh);
                 hearts.push(mesh);
             }
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-            scene.add(ambientLight);
-            const pointLight = new THREE.PointLight(0xffffff, 1);
-            pointLight.position.set(5, 5, 5);
-            scene.add(pointLight);
+            // -- Starfield Particles --
+            const particlesGeom = new THREE.BufferGeometry();
+            const particlesCount = 1500;
+            const posArray = new Float32Array(particlesCount * 3);
+            for (let i = 0; i < particlesCount * 3; i++) posArray[i] = (Math.random() - 0.5) * 50;
+            particlesGeom.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            const particlesMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffffff, transparent: true, opacity: 0.4 });
+            const starMesh = new THREE.Points(particlesGeom, particlesMat);
+            scene.add(starMesh);
 
-            camera.position.z = 5;
+            camera.position.z = 15;
 
-            let mouseX = 0;
-            let mouseY = 0;
-            const windowHalfX = window.innerWidth / 2;
-            const windowHalfY = window.innerHeight / 2;
-            document.addEventListener('mousemove', (event) => {
-                mouseX = (event.clientX - windowHalfX);
-                mouseY = (event.clientY - windowHalfY);
+            // Mouse interaction
+            let mouseX = 0, mouseY = 0;
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX - window.innerWidth / 2) * 0.001;
+                mouseY = (e.clientY - window.innerHeight / 2) * 0.001;
             });
 
+            // Animation Loop
             const clock = new THREE.Clock();
             function animate() {
-                const elapsedTime = clock.getElapsedTime();
-
-                // Beat Detection / Reactivity
-                let beatScale = 1;
-                if (analyser && isAudioSetup) {
-                    analyser.getByteFrequencyData(dataArray);
-                    // Average of lower frequencies (Bass)
-                    let sum = 0;
-                    for (let i = 0; i < 50; i++) {
-                        sum += dataArray[i];
-                    }
-                    const average = sum / 50;
-                    beatScale = 1 + (average / 256) * 0.5; // Scale between 1.0 and 1.5
-                }
-
-                particlesMesh.rotation.y = elapsedTime * 0.05;
-                particlesMesh.rotation.x = mouseY * 0.0001;
-                particlesMesh.rotation.y += mouseX * 0.0001;
-
-                // Pulse particles slightly
-                particlesMesh.scale.setScalar(1 + (beatScale - 1) * 0.2);
-
-                hearts.forEach(heart => {
-                    heart.position.y -= heart.userData.velocity * beatScale; // Move faster on beat
-                    heart.rotation.x += heart.userData.rotSpeedX;
-                    heart.rotation.y += heart.userData.rotSpeedY;
-                    heart.rotation.z += heart.userData.rotSpeedZ;
-
-                    // Beat Pulse for hearts
-                    const baseScale = heart.userData.baseScale || heart.scale.x;
-                    if (!heart.userData.baseScale) heart.userData.baseScale = baseScale;
-
-                    const targetScale = heart.userData.baseScale * beatScale;
-                    heart.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
-
-                    if (heart.position.y < -10) {
-                        heart.position.y = 10 + Math.random() * 5;
-                        heart.position.x = (Math.random() - 0.5) * 20;
-                        heart.userData.velocity = Math.random() * 0.05 + 0.02;
-                    }
-                });
-                renderer.render(scene, camera);
                 requestAnimationFrame(animate);
+                const time = clock.getElapsedTime();
+
+                // Rotate entire system gently
+                scene.rotation.y += 0.001;
+                scene.rotation.x += (mouseY - scene.rotation.x) * 0.05;
+                scene.rotation.y += (mouseX - scene.rotation.y) * 0.05;
+
+                // Animate Hearts
+                hearts.forEach(h => {
+                    h.position.y += h.userData.velY;
+                    h.rotation.z += h.userData.velRot;
+                    h.rotation.y += h.userData.velRot;
+
+                    // Audio Reactivity (Beat Pulse)
+                    let scaleBoost = 1;
+                    if (analyser) {
+                        analyser.getByteFrequencyData(dataArray);
+                        const avg = dataArray[20]; // Bass freq
+                        scaleBoost = 1 + (avg / 255) * 0.5;
+                    }
+
+                    const baseS = Math.abs(h.scale.x); // current absolute scale base
+                    // Reset if out of view
+                    if (h.position.y > 20) h.position.y = -20;
+                });
+
+                renderer.render(scene, camera);
             }
             animate();
+
+            // Resize handle
             window.addEventListener('resize', () => {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
@@ -599,457 +593,298 @@
             });
         }
 
-        // Initialize Three.js after load
-        window.addEventListener('load', initThreeJS);
+        // --- 2. AUDIO SYSTEM & VISUALIZER ---
+        let audioContext, analyser, dataArray, source;
+        let isAudioInit = false;
+        const audioElement = document.getElementById('bg-music');
+        const visualizerCanvas = document.getElementById('visualizer-canvas');
+        const visCtx = visualizerCanvas.getContext('2d');
 
-        // --- Countdown Timer ---
-        // USER INSTRUCTION: Set your target date here (e.g., New Year's Eve)
-        const targetDate = new Date("January 1, 2026 00:00:00").getTime();
-
-        function updateCountdown() {
-            const now = new Date().getTime();
-            const distance = targetDate - now;
-
-            if (distance < 0) {
-                // If date passed
-                document.getElementById("days").innerText = "00";
-                document.getElementById("hours").innerText = "00";
-                document.getElementById("minutes").innerText = "00";
-                document.getElementById("seconds").innerText = "00";
-                return;
-            }
-
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            document.getElementById("days").innerText = String(days).padStart(2, '0');
-            document.getElementById("hours").innerText = String(hours).padStart(2, '0');
-            document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
-            document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
-        }
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
-
-
-        // --- Entrance & Audio Control ---
-        const entranceOverlay = document.getElementById('entrance-overlay');
-        const enterBtn = document.getElementById('enter-btn');
-        const musicControls = document.getElementById('music-controls');
-        const audio = document.getElementById('bg-music');
-        const musicToggleBtn = document.getElementById('music-toggle');
-        const musicIcon = document.getElementById('music-icon');
-        const playerBtn = document.getElementById('player-btn');
-        const playerIcon = document.getElementById('player-icon');
-        let isPlaying = false;
-
-        enterBtn.addEventListener('click', () => {
-            // 1. Fade out overlay
-            entranceOverlay.classList.add('opacity-0', 'pointer-events-none');
-
-            // 2. Start Music & Audio Context
-            toggleMusic();
-
-            // 3. Show Controls
-            musicControls.classList.remove('opacity-0');
-
-            // 4. BIG Celebration
-            fireConfetti();
-            let count = 0;
-            const burst = setInterval(() => {
-                fireConfetti();
-                count++;
-                if (count > 5) clearInterval(burst);
-            }, 300);
-        });
-
-        function toggleMusic() {
-            // Ensure Audio Context is ready (must be user triggered)
-            if (!isAudioSetup) setupAudioContext();
-            if (audioContext && audioContext.state === 'suspended') {
-                audioContext.resume();
-            }
-
-            if (isPlaying) {
-                audio.pause();
-                musicIcon.innerText = 'music_off';
-                playerIcon.innerText = 'play_arrow';
-                isPlaying = false;
-            } else {
-                audio.play().then(() => {
-                    musicIcon.innerText = 'music_note';
-                    playerIcon.innerText = 'pause';
-                    isPlaying = true;
-                    if (isAudioSetup === false) setupAudioContext(); // Double check
-                }).catch(e => {
-                    console.log("Audio play failed: ", e);
-                });
-            }
-        }
-
-        musicToggleBtn.addEventListener('click', toggleMusic);
-
-        // --- Scroll Actions ---
-        function scrollToGallery() {
-            document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // --- Lightbox ---
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-        const lightboxCaption = document.getElementById('lightbox-caption');
-
-        function openLightbox(element) {
-            const img = element.querySelector('img');
-            const title = element.querySelector('p.font-bold').innerText;
-            if (!img) return; // Safety
-
-            lightboxImg.src = img.src;
-            lightboxCaption.innerText = title;
-            lightbox.classList.remove('hidden');
-            // small delay to allow display:flex to apply before opacity transition
-            setTimeout(() => {
-                lightbox.classList.remove('opacity-0');
-            }, 10);
-        }
-
-        function closeLightbox() {
-            lightbox.classList.add('opacity-0');
-            setTimeout(() => {
-                lightbox.classList.add('hidden');
-            }, 300);
-        }
-
-        // --- Confetti ---
-        function fireConfetti() {
-            var duration = 3 * 1000;
-            var animationEnd = Date.now() + duration;
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-            var hearts = confetti.shapeFromPath({ path: 'M167 72c19,-38 37,-56 75,-56 42,0 76,33 76,75 0,76 -76,151 -151,227 -76,-76 -151,-151 -151,-227 0,-42 33,-75 75,-75 38,0 57,18 76,56z' });
-
-            var interval = setInterval(function () {
-                var timeLeft = animationEnd - Date.now();
-                if (timeLeft <= 0) return clearInterval(interval);
-
-                var particleCount = 50 * (timeLeft / duration);
-                var colors = ['#ff0000', '#ff0080', '#d946ef', '#ffd700'];
-                confetti(Object.assign({}, defaults, {
-                    particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 },
-                    shapes: ['heart'], colors: colors, scalar: 2
-                }));
-            }, 250);
-        }
-
-        // Initial simplified confetti burst on load
-        window.addEventListener('load', () => {
-            var colors = ['#ff0000', '#ff0080', '#d946ef', '#ffd700'];
-            confetti({
-                particleCount: 100, spread: 70, origin: { y: 0.6 },
-                shapes: ['heart'], colors: colors
-            });
-        });
-
-    </script>
-    <script>
-        // --- 1. Audio Visualizer Setup ---
-        let audioContext;
-        let analyser;
-        let dataArray;
-        let visualizerCanvas;
-        let visualizerCtx;
-        let isAudioSetup = false;
-
-        function setupAudioContext() {
-            if (isAudioSetup) return;
-
-            const audio = document.getElementById('bg-music');
-            // Check for AudioContext support
+        function initAudio() {
+            if (isAudioInit) return;
             const AudioContext = window.AudioContext || window.webkitAudioContext;
-            if (!AudioContext) return; // Fallback for older browsers
-
             audioContext = new AudioContext();
             analyser = audioContext.createAnalyser();
-
-            // Re-use source if possible or create new (be careful with CORS if audio was external, but it's local assets)
-            try {
-                const source = audioContext.createMediaElementSource(audio);
-                source.connect(analyser);
-                analyser.connect(audioContext.destination);
-            } catch (e) {
-                console.log("Audio source already connected or error:", e);
-            }
-
-            analyser.fftSize = 256;
-            const bufferLength = analyser.frequencyBinCount;
-            dataArray = new Uint8Array(bufferLength);
-
-            visualizerCanvas = document.getElementById('visualizer-canvas');
-            if (visualizerCanvas) {
-                visualizerCtx = visualizerCanvas.getContext('2d');
-                // Resize canvas
-                visualizerCanvas.width = visualizerCanvas.offsetWidth;
-                visualizerCanvas.height = visualizerCanvas.offsetHeight;
-
-                // Handle resize
-                window.addEventListener('resize', () => {
-                    visualizerCanvas.width = visualizerCanvas.offsetWidth;
-                    visualizerCanvas.height = visualizerCanvas.offsetHeight;
-                });
-            }
-
-            isAudioSetup = true;
+            source = audioContext.createMediaElementSource(audioElement);
+            source.connect(analyser);
+            analyser.connect(audioContext.destination);
+            analyser.fftSize = 128; // Lower for chunkier bars
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+            isAudioInit = true;
+            resizeVisualizer();
             drawVisualizer();
         }
 
+        function resizeVisualizer() {
+            visualizerCanvas.width = visualizerCanvas.offsetWidth;
+            visualizerCanvas.height = visualizerCanvas.offsetHeight;
+        }
+        window.addEventListener('resize', resizeVisualizer);
+
         function drawVisualizer() {
             requestAnimationFrame(drawVisualizer);
-            if (!analyser || !visualizerCtx) return;
+            if (!analyser) return;
 
             analyser.getByteFrequencyData(dataArray);
-
-            visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+            visCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
 
             const barWidth = (visualizerCanvas.width / dataArray.length) * 2.5;
             let barHeight;
             let x = 0;
 
             for (let i = 0; i < dataArray.length; i++) {
-                barHeight = dataArray[i] / 2; // Scale down to fit
+                barHeight = dataArray[i] / 2; // Scale
+                // Gradient Bars
+                const gradient = visCtx.createLinearGradient(0, 0, 0, visualizerCanvas.height);
+                gradient.addColorStop(0, '#ec4899'); // Pink
+                gradient.addColorStop(1, 'transparent');
 
-                // Gradient color
-                const gradient = visualizerCtx.createLinearGradient(0, 0, 0, visualizerCanvas.height);
-                gradient.addColorStop(0, '#d946ef');
-                gradient.addColorStop(1, '#7f13ec');
-
-                visualizerCtx.fillStyle = gradient;
-                visualizerCtx.fillRect(x, visualizerCanvas.height - barHeight, barWidth, barHeight);
-
-                x += barWidth + 1;
+                visCtx.fillStyle = gradient;
+                // Draw rounded rect equivalent
+                visCtx.fillRect(x, visualizerCanvas.height - barHeight, barWidth - 2, barHeight);
+                x += barWidth;
             }
         }
 
+        // --- 3. LOGIC CONTROLLERS ---
 
-        // --- 2. Advanced Features Initialization ---
-        window.addEventListener('load', () => {
-            initCustomCursor();
-            initTiltEffect();
-            initTypewriterEffect();
-            initScrollObserver();
-        });
+        // Entrance Logic
+        const overlay = document.getElementById('entrance-overlay');
+        const enterBtn = document.getElementById('enter-btn');
+        const controlsUI = document.getElementById('controls-ui');
+        let isPlaying = false;
 
-        // --- Scroll Observer ---
-        function initScrollObserver() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('reveal-visible');
-                    }
-                });
-            }, {
-                threshold: 0.1
-            });
+        enterBtn.addEventListener('click', () => {
+            initAudio();
+            toggleMusic();
+            overlay.classList.add('opacity-0', 'pointer-events-none');
+            controlsUI.classList.remove('opacity-0');
 
-            document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
-        }
-
-
-        // --- 3. Custom Cursor ---
-        function initCustomCursor() {
-            const canvas = document.getElementById('cursor-canvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            let width = window.innerWidth;
-            let height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
-
-            const particles = [];
-
-            window.addEventListener('resize', () => {
-                width = window.innerWidth;
-                height = window.innerHeight;
-                canvas.width = width;
-                canvas.height = height;
-            });
-
-            document.addEventListener('mousemove', (e) => {
-                // Determine color based on position
-                const color = Math.random() > 0.5 ? '#7f13ec' : '#d946ef';
-                particles.push({
-                    x: e.clientX,
-                    y: e.clientY,
-                    size: Math.random() * 12 + 20, // Much bigger (20-32px)
-                    color: color,
-                    life: 1
-                });
-            });
-
-            function animateCursor() {
-                ctx.clearRect(0, 0, width, height);
-
-                for (let i = 0; i < particles.length; i++) {
-                    const p = particles[i];
-                    ctx.globalAlpha = p.life;
-                    ctx.fillStyle = p.color;
-                    ctx.font = p.size + "px serif"; // Use font for text
-                    ctx.fillText("♥", p.x, p.y); // Draw Heart
-
-                    p.life -= 0.02; // Fade slower
-                    p.y -= 0.5; // Float up slightly
-
-                    if (p.life <= 0) {
-                        particles.splice(i, 1);
-                        i--;
-                    }
-                }
-                requestAnimationFrame(animateCursor);
-            }
-            animateCursor();
-        }
-
-        // --- Love Shower ---
-        var scalar = 2;
-        var emojiShape1 = confetti.shapeFromText({ text: '😘', scalar });
-        var emojiShape2 = confetti.shapeFromText({ text: '🥰', scalar });
-        var emojiShape3 = confetti.shapeFromText({ text: '🤗', scalar });
-        var emojiShape4 = confetti.shapeFromText({ text: '😍', scalar });
-
-        function sendLove() {
+            // Celebration Confetti
             var duration = 3 * 1000;
-            var animationEnd = Date.now() + duration;
-
-            var interval = setInterval(function () {
-                var timeLeft = animationEnd - Date.now();
-                if (timeLeft <= 0) return clearInterval(interval);
-
-                // Randomize spawn position slightly
-                const randomX = 0.8 + Math.random() * 0.2;
-
+            var end = Date.now() + duration;
+            (function frame() {
                 confetti({
-                    particleCount: 3,
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#ec4899', '#8b5cf6']
+                });
+                confetti({
+                    particleCount: 5,
                     angle: 120,
                     spread: 55,
-                    origin: { x: 0.9, y: 0.95 },
-                    shapes: [emojiShape1, emojiShape2, emojiShape3, emojiShape4, 'heart'],
-                    scalar: 4, // Big emojis
-                    drift: -0.5,
-                    gravity: 0.5,
-                    ticks: 100
+                    origin: { x: 1 },
+                    colors: ['#ec4899', '#8b5cf6']
                 });
-            }, 150);
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        });
+
+        function toggleMusic() {
+            if (!isAudioInit) initAudio();
+            if (audioContext.state === 'suspended') audioContext.resume();
+
+            const musicIcon = document.getElementById('music-icon');
+            const playerIcon = document.getElementById('player-icon');
+
+            if (isPlaying) {
+                audioElement.pause();
+                musicIcon.innerText = 'music_off';
+                if (playerIcon) playerIcon.innerText = 'play_arrow';
+                isPlaying = false;
+            } else {
+                audioElement.play();
+                musicIcon.innerText = 'music_note';
+                if (playerIcon) playerIcon.innerText = 'pause';
+                isPlaying = true;
+            }
+        }
+        document.getElementById('music-toggle').addEventListener('click', toggleMusic);
+
+        // --- 4. INTERACTION EFFECTS ---
+
+        // Heart Trail Cursor
+        const cursorCanvas = document.getElementById('cursor-canvas');
+        const ctx = cursorCanvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        function initCursor() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            cursorCanvas.width = width;
+            cursorCanvas.height = height;
+        }
+        window.addEventListener('resize', initCursor);
+        initCursor();
+
+        document.addEventListener('mousemove', (e) => {
+            // Add particle
+            particles.push({
+                x: e.clientX,
+                y: e.clientY,
+                size: Math.random() * 8 + 5,
+                color: `hsl(${Math.random() * 60 + 280}, 100%, 70%)`, // Purple/Pink Hue
+                life: 1
+            });
+        });
+
+        function animateCursor() {
+            ctx.clearRect(0, 0, width, height);
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = p.life;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                p.life -= 0.05;
+                p.y += 1; // Fall down slightly
+                if (p.life <= 0) {
+                    particles.splice(i, 1);
+                    i--;
+                }
+            }
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // 3D Tilt Effect for Cards
+        document.querySelectorAll('.tilt-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const cx = rect.width / 2;
+                const cy = rect.height / 2;
+
+                const rotateX = ((y - cy) / cy) * -10;
+                const rotateY = ((x - cx) / cx) * 10;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+            });
+        });
+
+        // Typewriter Effect
+        const typeWriterElement = document.getElementById('typewriter-text');
+        let textIndex = 0;
+        let charIndex = 0;
+        let isTyping = false;
+
+        function typeWriter() {
+            if (textIndex < LOVE_LETTER.length) {
+                if (charIndex < LOVE_LETTER[textIndex].length) {
+                    // Start new paragraph if needed
+                    if (charIndex === 0) typeWriterElement.innerHTML += (textIndex > 0 ? "<br><br>" : "");
+
+                    typeWriterElement.innerHTML += LOVE_LETTER[textIndex].charAt(charIndex);
+                    charIndex++;
+                    setTimeout(typeWriter, 40);
+                } else {
+                    textIndex++;
+                    charIndex = 0;
+                    setTimeout(typeWriter, 500); // Pause between sentences
+                }
+            } else {
+                typeWriterElement.classList.remove('typing-cursor');
+            }
         }
 
-        // --- 4. 3D Tilt Effect ---
-        function initTiltEffect() {
-            const cards = document.querySelectorAll('.tilt-card');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !isTyping) {
+                    isTyping = true;
+                    typeWriterElement.classList.remove('hidden');
+                    typeWriterElement.classList.add('typing-cursor');
+                    typeWriter();
+                }
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('reveal-visible');
+                }
+            });
+        }, { threshold: 0.3 });
 
-            cards.forEach(card => {
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
 
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
 
-                    const rotateX = ((y - centerY) / centerY) * -10; // Max -10 to 10 deg
-                    const rotateY = ((x - centerX) / centerX) * 10;
+        // Lightbox Logic
+        const lightbox = document.getElementById('lightbox');
+        const lbImg = document.getElementById('lightbox-img');
+        const lbCap = document.getElementById('lightbox-caption');
 
-                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
-                });
+        function openLightbox(el) {
+            const img = el.querySelector('img');
+            const title = el.querySelector('p.font-handwriting').innerText;
+            lbImg.src = img.src;
+            lbCap.innerText = title;
+            lightbox.classList.remove('hidden');
+            setTimeout(() => {
+                lightbox.classList.remove('opacity-0');
+                lbImg.classList.remove('scale-95');
+                lbImg.classList.add('scale-100');
+            }, 10);
+        }
 
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+        function closeLightbox() {
+            lightbox.classList.add('opacity-0');
+            lbImg.classList.add('scale-95');
+            lbImg.classList.remove('scale-100');
+            setTimeout(() => lightbox.classList.add('hidden'), 500);
+        }
+
+        // Send Love Logic
+        function sendLove() {
+            const defaults = { origin: { y: 0.9, x: 0.9 }, spread: 30, startVelocity: 40, scalar: 2 };
+            const particleCount = 20;
+
+            // Hearts
+            confetti({ ...defaults, particleCount, shapes: ['heart'], colors: ['#ec4899', '#ef4444'] });
+
+            // Emojis
+            const emojis = ['😘', '💖', '😍', '✨'];
+            emojis.forEach(emoji => {
+                const shape = confetti.shapeFromText({ text: emoji, scalar: 3 });
+                confetti({
+                    ...defaults,
+                    particleCount: 5,
+                    shapes: [shape],
+                    scalar: 3,
+                    gravity: 0.5,
+                    drift: -1
                 });
             });
         }
 
-        // --- 5. Typewriter Effect ---
-        function initTypewriterEffect() {
-            const p1 = document.getElementById('typewriter-1');
-            const p2 = document.getElementById('typewriter-2');
-            if (!p1 || !p2) return;
+        // Countdown Logic
+        function updateTimer() {
+            const now = new Date().getTime();
+            const dist = TARGET_DATE - now;
 
-            const text1 = p1.innerText.trim();
-            const text2 = p2.innerText.trim();
-
-            p1.innerText = "";
-            p2.innerText = "";
-            p1.classList.remove('hidden'); // make visible for observer, but empty
-            p2.classList.remove('hidden');
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        startTyping(p1, text1, () => {
-                            startTyping(p2, text2);
-                        });
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.5 });
-
-            observer.observe(p1);
-        }
-
-        function startTyping(element, text, callback) {
-            element.classList.add('typing-cursor');
-            let i = 0;
-            const speed = 30; // ms per char
-
-            function type() {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
-                    i++;
-                    setTimeout(type, speed);
-                } else {
-                    element.classList.remove('typing-cursor');
-                    if (callback) callback();
-                }
-            }
-            type();
-        }
-
-        // Update toggleMusic to initialize audio context
-        const originalToggleMusic = window.toggleMusic;
-        window.toggleMusic = function () {
-            if (!isAudioSetup) {
-                setupAudioContext();
+            if (dist < 0) {
+                document.getElementById('days').innerText = "00"; return;
             }
 
-            if (isPlaying) {
-                audio.pause();
-                musicIcon.innerText = 'music_off';
-                playerIcon.innerText = 'play_arrow';
-                isPlaying = false;
-            } else {
-                audio.play().then(() => {
-                    musicIcon.innerText = 'music_note';
-                    playerIcon.innerText = 'pause';
-                    isPlaying = true;
-                    fireConfetti();
+            const d = Math.floor(dist / (1000 * 60 * 60 * 24));
+            const h = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((dist % (1000 * 60)) / 1000);
 
-                    if (audioContext && audioContext.state === 'suspended') {
-                        audioContext.resume();
-                    }
-                }).catch(e => {
-                    console.log("Audio play failed (interaction needed): ", e);
-                    alert("Tap anywhere to allow music playback!");
-                });
-            }
-        };
-
-        // Re-bind listener
-        if (typeof musicToggleBtn !== 'undefined' && musicToggleBtn) {
-            const newMusicBtn = musicToggleBtn.cloneNode(true);
-            musicToggleBtn.parentNode.replaceChild(newMusicBtn, musicToggleBtn);
-            newMusicBtn.addEventListener('click', window.toggleMusic);
-            // Re-bind musicToggleBtn reference
-            // musicToggleBtn = newMusicBtn; // Can't reassign const, but the element ID lookup might work next time?
-            // Actually, `const musicToggleBtn` is block scoped in the previous script.
-            // We can't update it. But `document.getElementById('music-toggle')` will get the new element.
+            document.getElementById('days').innerText = String(d).padStart(2, '0');
+            document.getElementById('hours').innerText = String(h).padStart(2, '0');
+            document.getElementById('minutes').innerText = String(m).padStart(2, '0');
+            document.getElementById('seconds').innerText = String(s).padStart(2, '0');
         }
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        // Start ThreeJS
+        initThreeJS();
 
     </script>
 </body>
