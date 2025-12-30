@@ -419,13 +419,15 @@
                 </div>
 
                 <div class="pt-6">
-                    <p class="font-handwriting text-3xl text-gradient">Forever Yours,<br>Tarun</p>
+                    <div class="pt-6">
+                        <p class="font-handwriting text-4xl text-white font-bold tracking-wide drop-shadow-lg">Forever
+                            Yours,<br>Tarun</p>
+                    </div>
                 </div>
-            </div>
         </section>
 
-        <footer class="py-8 text-center text-slate-600 text-sm">
-            <p>Made with ❤️ for Gunjan/p>
+        <footer class="py-12 text-center text-slate-500 text-lg font-medium">
+            <p>Made with ❤️ for Gunjan</p>
         </footer>
 
     </main>
@@ -877,7 +879,7 @@
                 particles.push({
                     x: e.clientX,
                     y: e.clientY,
-                    size: Math.random() * 4 + 1,
+                    size: Math.random() * 12 + 20, // Much bigger (20-32px)
                     color: color,
                     life: 1
                 });
@@ -907,29 +909,35 @@
         }
 
         // --- Love Shower ---
-        function sendLove() {
-            var duration = 2 * 1000;
-            var animationEnd = Date.now() + duration;
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+        var scalar = 2;
+        var emojiShape1 = confetti.shapeFromText({ text: '😘', scalar });
+        var emojiShape2 = confetti.shapeFromText({ text: '🥰', scalar });
+        var emojiShape3 = confetti.shapeFromText({ text: '🤗', scalar });
+        var emojiShape4 = confetti.shapeFromText({ text: '😍', scalar });
 
-            // Instagram Live style: from bottom right
+        function sendLove() {
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+
             var interval = setInterval(function () {
                 var timeLeft = animationEnd - Date.now();
                 if (timeLeft <= 0) return clearInterval(interval);
 
-                var particleCount = 20 * (timeLeft / duration);
+                // Randomize spawn position slightly
+                const randomX = 0.8 + Math.random() * 0.2;
 
                 confetti({
-                    particleCount: 5,
-                    angle: 120, // Shoot up-left
+                    particleCount: 3,
+                    angle: 120,
                     spread: 55,
-                    origin: { x: 0.9, y: 0.9 }, // Bottom right
-                    colors: ['#ff0000', '#ff0080', '#d946ef'],
-                    shapes: ['heart'],
-                    scalar: 3,
-                    drift: -1 // Drift left
+                    origin: { x: 0.9, y: 0.95 },
+                    shapes: [emojiShape1, emojiShape2, emojiShape3, emojiShape4, 'heart'],
+                    scalar: 4, // Big emojis
+                    drift: -0.5,
+                    gravity: 0.5,
+                    ticks: 100
                 });
-            }, 100);
+            }, 150);
         }
 
         // --- 4. 3D Tilt Effect ---
