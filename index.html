@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy New Year, Sarah!</title>
+    <title>Happy New Year, Guni!</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -172,6 +172,18 @@
             class="glass-panel text-white p-3 rounded-full hover:bg-primary/20 transition-all duration-300 shadow-lg group">
             <span class="material-symbols-outlined group-hover:scale-110 transition-transform"
                 id="music-icon">music_note</span>
+        </button>
+    </div>
+
+    <!-- Floating Love Button -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <button onclick="sendLove()"
+            class="group w-14 h-14 bg-gradient-to-tr from-pink-500 to-red-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-pink-500/30 hover:shadow-pink-500/50 hover:scale-110 transition-all duration-300">
+            <span class="material-symbols-outlined text-3xl animate-pulse">favorite</span>
+            <span
+                class="absolute -top-10 scale-0 group-hover:scale-100 transition-transform bg-white text-pink-600 text-xs font-bold px-2 py-1 rounded-lg whitespace-nowrap">
+                Send Love!
+            </span>
         </button>
     </div>
 
@@ -878,12 +890,11 @@
                     const p = particles[i];
                     ctx.globalAlpha = p.life;
                     ctx.fillStyle = p.color;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                    ctx.fill();
+                    ctx.font = p.size + "px serif"; // Use font for text
+                    ctx.fillText("♥", p.x, p.y); // Draw Heart
 
-                    p.life -= 0.05;
-                    p.size *= 0.9;
+                    p.life -= 0.02; // Fade slower
+                    p.y -= 0.5; // Float up slightly
 
                     if (p.life <= 0) {
                         particles.splice(i, 1);
@@ -893,6 +904,32 @@
                 requestAnimationFrame(animateCursor);
             }
             animateCursor();
+        }
+
+        // --- Love Shower ---
+        function sendLove() {
+            var duration = 2 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            // Instagram Live style: from bottom right
+            var interval = setInterval(function () {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+
+                var particleCount = 20 * (timeLeft / duration);
+
+                confetti({
+                    particleCount: 5,
+                    angle: 120, // Shoot up-left
+                    spread: 55,
+                    origin: { x: 0.9, y: 0.9 }, // Bottom right
+                    colors: ['#ff0000', '#ff0080', '#d946ef'],
+                    shapes: ['heart'],
+                    scalar: 3,
+                    drift: -1 // Drift left
+                });
+            }, 100);
         }
 
         // --- 4. 3D Tilt Effect ---
