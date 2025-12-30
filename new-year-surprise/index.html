@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy New Year, Sarah!</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1"
+        rel="stylesheet" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#7f13ec',
+                        secondary: '#d946ef', // Fuchsia-500
+                        dark: '#191022',
+                        'dark-surface': '#261a30',
+                        light: '#f7f6f8'
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        handwriting: ['Dancing Script', 'cursive'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* Custom Cursor */
+        .cursor-trail {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: screen;
+        }
+
+        /* Typewriter Cursor */
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Tilt Effect Perspective */
+        .tilt-card {
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+            /* Fast reaction */
+        }
+
+        .glass-panel {
+            background: rgba(38, 26, 48, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #7f13ec, #d946ef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #191022;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3c2a4d;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7f13ec;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="bg-dark text-white font-sans overflow-x-hidden antialiased selection:bg-primary selection:text-white">
+
+    <!-- Custom Cursor Canvas -->
+    <canvas id="cursor-canvas" class="cursor-trail"></canvas>
+
+    <!-- Audio Element (Hidden) -->
+    <!-- USER INSTRUCTION: Replace 'assets/our-song.mp3' with your actual audio file path -->
+    <audio id="bg-music" loop>
+        <source src="assets/mine.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Floating Music Toggle -->
+    <div class="fixed top-6 right-6 z-50">
+        <button id="music-toggle"
+            class="glass-panel text-white p-3 rounded-full hover:bg-primary/20 transition-all duration-300 shadow-lg group">
+            <span class="material-symbols-outlined group-hover:scale-110 transition-transform"
+                id="music-icon">music_note</span>
+        </button>
+    </div>
+
+    <!-- Main Container -->
+    <main class="min-h-screen flex flex-col items-center">
+
+        <!-- SECTION 1: HERO & COUNTDOWN -->
+        <section
+            class="min-h-screen w-full flex flex-col justify-center items-center relative overflow-hidden px-6 pt-20 pb-10">
+            <!-- Background Elements -->
+            <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+                <div
+                    class="absolute top-[10%] left-[5%] w-72 h-72 bg-primary/20 rounded-full blur-[100px] animate-pulse-slow">
+                </div>
+                <div class="absolute bottom-[10%] right-[5%] w-96 h-96 bg-secondary/10 rounded-full blur-[120px] animate-pulse-slow"
+                    style="animation-delay: 2s;"></div>
+            </div>
+
+            <div class="z-10 text-center max-w-2xl mx-auto flex flex-col items-center gap-8">
+
+                <!-- Tag -->
+                <div
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 animate-fade-in-up">
+                    <span class="relative flex h-2.5 w-2.5">
+                        <span
+                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+                    </span>
+                    <span class="text-primary text-xs font-bold uppercase tracking-widest">Our New Year</span>
+                </div>
+
+                <!-- Text -->
+                <div class="space-y-4">
+                    <h1 class="text-5xl md:text-7xl font-black leading-tight tracking-tight">
+                        Happy New Year,<br>
+                        <span class="text-gradient">Gunjan!</span>
+                    </h1>
+                    <p class="text-slate-400 text-lg md:text-xl font-medium max-w-lg mx-auto leading-relaxed">
+                        To the one who makes every moment worth it. Here's to us and another beautiful year ahead.
+                    </p>
+                </div>
+
+                <!-- Countdown -->
+                <div class="glass-panel p-6 rounded-2xl w-full max-w-md animate-float">
+                    <p class="text-xs text-slate-400 uppercase tracking-widest font-bold mb-4">Countdown to 2026</p>
+                    <!-- Example Year -->
+                    <div class="grid grid-cols-4 gap-4 text-center">
+                        <div class="flex flex-col gap-1">
+                            <span class="text-3xl font-bold font-mono" id="days">00</span>
+                            <span class="text-[10px] text-slate-500 uppercase font-bold">Days</span>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <span class="text-3xl font-bold font-mono" id="hours">00</span>
+                            <span class="text-[10px] text-slate-500 uppercase font-bold">Hrs</span>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <span class="text-3xl font-bold font-mono" id="minutes">00</span>
+                            <span class="text-[10px] text-slate-500 uppercase font-bold">Mins</span>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <span class="text-3xl font-bold font-mono text-primary" id="seconds">00</span>
+                            <span class="text-[10px] text-slate-500 uppercase font-bold">Secs</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA -->
+                <button onclick="scrollToGallery()"
+                    class="mt-4 group flex items-center gap-3 bg-gradient-to-r from-primary to-secondary text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all hover:-translate-y-1">
+                    <span>Open Memories</span>
+                    <span
+                        class="material-symbols-outlined group-hover:translate-y-1 transition-transform">keyboard_arrow_down</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- SECTION 2: GALLERY -->
+        <section id="gallery" class="w-full py-20 px-4 md:px-8 bg-dark-surface/30 relative">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex flex-col items-center mb-12 text-center">
+                    <span class="text-secondary font-handwriting text-3xl mb-2 transformation -rotate-3">Unforgettable
+                        Moments</span>
+                    <h2 class="text-3xl md:text-4xl font-bold">Our Journey Together</h2>
+                </div>
+
+                <!-- Masonry Grid -->
+                <div class="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+
+                    <!-- Item 1 -->
+                    <!-- USER INSTRUCTION: Replace existing src with your image paths -->
+                    <div class="break-inside-avoid relative group rounded-2xl overflow-hidden cursor-pointer min-h-[300px] bg-primary/10 tilt-card"
+                        onclick="openLightbox(this)">
+                        <img src="assets/img1.png"
+                            class="w-full h-auto block object-cover transition-transform duration-700 group-hover:scale-105"
+                            alt="Memory 1">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                            <p class="font-bold text-white text-lg">First Date</p>
+                            <p class="text-sm text-slate-300">Where it all began</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="break-inside-avoid relative group rounded-2xl overflow-hidden cursor-pointer min-h-[300px] bg-primary/10 tilt-card"
+                        onclick="openLightbox(this)">
+                        <img src="assets/img2.png"
+                            class="w-full h-auto block object-cover transition-transform duration-700 group-hover:scale-105"
+                            alt="Memory 2">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                            <p class="font-bold text-white text-lg">Road Trip</p>
+                            <p class="text-sm text-slate-300">Just us and the road</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 3 (Text Note) -->
+                    <div
+                        class="break-inside-avoid relative p-8 bg-primary/10 border border-primary/20 rounded-2xl flex flex-col justify-center items-center text-center gap-4 min-h-[200px]">
+                        <span class="material-symbols-outlined text-4xl text-primary">favorite</span>
+                        <p class="font-handwriting text-2xl text-white/90">"Every love story is beautiful, but ours is
+                            my favorite."</p>
+                    </div>
+
+                    <!-- Item 4 -->
+                    <div class="break-inside-avoid relative group rounded-2xl overflow-hidden cursor-pointer min-h-[300px] bg-primary/10 tilt-card"
+                        onclick="openLightbox(this)">
+                        <img src="assets/img3.png"
+                            class="w-full h-auto block object-cover transition-transform duration-700 group-hover:scale-105"
+                            alt="Memory 3">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                            <p class="font-bold text-white text-lg">Concerts</p>
+                            <p class="text-sm text-slate-300">Singing our hearts out</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 5 -->
+                    <div class="break-inside-avoid relative group rounded-2xl overflow-hidden cursor-pointer min-h-[300px] bg-primary/10 tilt-card"
+                        onclick="openLightbox(this)">
+                        <img src="assets/img4.png"
+                            class="w-full h-auto block object-cover transition-transform duration-700 group-hover:scale-105"
+                            alt="Memory 4">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                            <p class="font-bold text-white text-lg">Christmas Eve</p>
+                            <p class="text-sm text-slate-300">Cozy nights</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 6 -->
+                    <div class="break-inside-avoid relative group rounded-2xl overflow-hidden cursor-pointer min-h-[300px] bg-primary/10 tilt-card"
+                        onclick="openLightbox(this)">
+                        <img src="assets/img5.png"
+                            class="w-full h-auto block object-cover transition-transform duration-700 group-hover:scale-105"
+                            alt="Memory 5">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                            <p class="font-bold text-white text-lg">Special Moment</p>
+                            <p class="text-sm text-slate-300">Unforgettable</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 7 -->
+                    <div class="break-inside-avoid relative group rounded-2xl overflow-hidden cursor-pointer min-h-[300px] bg-primary/10"
+                        onclick="openLightbox(this)">
+                        <img src="assets/img6.png"
+                            class="w-full h-auto block object-cover transition-transform duration-700 group-hover:scale-105"
+                            alt="Memory 6">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                            <p class="font-bold text-white text-lg">Just Us</p>
+                            <p class="text-sm text-slate-300">Forever</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: LETTER & AUDIO -->
+        <section class="w-full py-20 px-6 flex justify-center items-center min-h-[80vh] relative">
+            <!-- Decorative Glow -->
+            <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                <div
+                    class="absolute top-[30%] left-[50%] -translate-x-1/2 w-full max-w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px]">
+                </div>
+            </div>
+
+            <div
+                class="glass-panel w-full max-w-2xl p-8 md:p-12 rounded-3xl relative overflow-hidden text-center flex flex-col items-center gap-8 border border-primary/20 shadow-2xl shadow-primary/10">
+
+                <!-- Visualizer Location -->
+                <canvas id="visualizer-canvas"
+                    class="absolute bottom-0 left-0 w-full h-32 opacity-30 pointer-events-none"></canvas>
+
+                <div
+                    class="w-16 h-16 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center text-white shadow-lg mb-2">
+                    <span class="material-symbols-outlined text-3xl">mark_email_read</span>
+                </div>
+
+                <div class="space-y-6">
+                    <h2 class="font-handwriting text-4xl md:text-5xl text-white">To My Dearest Gunjan</h2>
+                    <div class="prose prose-invert prose-lg text-slate-300 leading-relaxed font-light min-h-[150px]">
+                        <p id="typewriter-1" class="hidden">
+                            I know things haven't always been easy, but fighting for us has been the best decision I've
+                            ever made.
+                            You are my rock, my joy, and my safe place.
+                        </p>
+                        <p id="typewriter-2" class="hidden">
+                            As we step into this New Year, I want to promise you all my love, my patience, and my best
+                            efforts.
+                            Let's make this year our masterpiece.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Custom Audio Player UI -->
+                <div
+                    class="w-full bg-dark-surface/80 p-4 rounded-xl flex items-center gap-4 border border-white/5 mt-4">
+                    <div
+                        class="h-12 w-12 bg-primary/20 rounded-lg flex items-center justify-center text-primary shrink-0">
+                        <span class="material-symbols-outlined animate-pulse">equalizer</span>
+                    </div>
+                    <div class="flex-1 text-left overflow-hidden">
+                        <p class="font-bold text-white text-sm truncate">A Message For You</p>
+                        <p class="text-xs text-slate-400">Play me ❤️</p>
+                    </div>
+                    <button id="player-btn"
+                        class="w-10 h-10 rounded-full bg-white text-primary flex items-center justify-center hover:scale-105 transition-transform"
+                        onclick="toggleMusic()">
+                        <span class="material-symbols-outlined fill" id="player-icon">play_arrow</span>
+                    </button>
+                </div>
+
+                <div class="pt-6">
+                    <p class="font-handwriting text-3xl text-gradient">Forever Yours,<br>Tarun</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="py-8 text-center text-slate-600 text-sm">
+            <p>Made with ❤️ for Gunjan/p>
+        </footer>
+
+    </main>
+
+    <!-- Simple Lightbox Modal -->
+    <div id="lightbox"
+        class="fixed inset-0 z-[60] bg-black/95 hidden flex flex-col justify-center items-center p-4 opacity-0 transition-opacity duration-300">
+        <button class="absolute top-6 right-6 text-white p-2 hover:bg-white/10 rounded-full" onclick="closeLightbox()">
+            <span class="material-symbols-outlined text-3xl">close</span>
+        </button>
+        <img id="lightbox-img" src="" class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl">
+        <p id="lightbox-caption" class="text-white mt-4 text-xl font-bold font-handwriting tracking-wider"></p>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        // --- Three.js Background Animation ---
+        function initThreeJS() {
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+
+            // Create a canvas container fixed in background
+            const container = document.createElement('div');
+            container.style.position = 'fixed';
+            container.style.top = '0';
+            container.style.left = '0';
+            container.style.width = '100%';
+            container.style.height = '100%';
+            container.style.zIndex = '-1';
+            container.style.pointerEvents = 'none'; // Allow clicks to pass through
+            container.id = 'three-bg';
+            document.body.prepend(container);
+            container.appendChild(renderer.domElement);
+
+            // 1. Starfield (Existing)  
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particlesCount = 1000;
+            const posArray = new Float32Array(particlesCount * 3);
+            for (let i = 0; i < particlesCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 15;
+            }
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            const material = new THREE.PointsMaterial({
+                size: 0.02,
+                color: 0xd946ef,
+                transparent: true,
+                opacity: 0.5,
+                blending: THREE.AdditiveBlending
+            });
+            const particlesMesh = new THREE.Points(particlesGeometry, material);
+            scene.add(particlesMesh);
+
+            // 2. 3D Falling Hearts (New)
+            const heartShape = new THREE.Shape();
+            const x = 0, y = 0;
+            heartShape.moveTo(x + 5, y + 5);
+            heartShape.bezierCurveTo(x + 5, y + 5, x + 4, y, x, y);
+            heartShape.bezierCurveTo(x - 6, y, x - 6, y + 7, x - 6, y + 7);
+            heartShape.bezierCurveTo(x - 6, y + 11, x - 3, y + 15.4, x + 5, y + 19);
+            heartShape.bezierCurveTo(x + 12, y + 15.4, x + 16, y + 11, x + 16, y + 7);
+            heartShape.bezierCurveTo(x + 16, y + 7, x + 16, y, x + 10, y);
+            heartShape.bezierCurveTo(x + 7, y, x + 5, y + 5, x + 5, y + 5);
+
+            const extrudeSettings = { depth: 2, bevelEnabled: true, bevelSegments: 2, steps: 2, bevelSize: 1, bevelThickness: 1 };
+            const heartGeometry = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
+            heartGeometry.scale(0.02, -0.02, 0.02);
+            heartGeometry.center();
+
+            const hearts = [];
+            const heartMaterials = [
+                new THREE.MeshPhongMaterial({ color: 0xff0080, shininess: 100 }), // Hot Pink
+                new THREE.MeshPhongMaterial({ color: 0xff0000, shininess: 100 }), // Red
+                new THREE.MeshPhongMaterial({ color: 0x9d00ff, shininess: 100 }), // Purple
+                new THREE.MeshPhongMaterial({ color: 0xffd700, shininess: 100 })  // Gold
+            ];
+
+            for (let i = 0; i < 50; i++) {
+                const material = heartMaterials[Math.floor(Math.random() * heartMaterials.length)];
+                const mesh = new THREE.Mesh(heartGeometry, material);
+                mesh.position.set((Math.random() - 0.5) * 20, Math.random() * 20 + 5, (Math.random() - 0.5) * 10);
+                mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+                const scale = Math.random() * 0.5 + 0.5;
+                mesh.scale.set(scale, scale, scale);
+                mesh.userData = {
+                    velocity: Math.random() * 0.05 + 0.02,
+                    rotSpeedX: (Math.random() - 0.5) * 0.05,
+                    rotSpeedY: (Math.random() - 0.5) * 0.05,
+                    rotSpeedZ: (Math.random() - 0.5) * 0.05
+                };
+                scene.add(mesh);
+                hearts.push(mesh);
+            }
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            const pointLight = new THREE.PointLight(0xffffff, 1);
+            pointLight.position.set(5, 5, 5);
+            scene.add(pointLight);
+
+            camera.position.z = 5;
+
+            let mouseX = 0;
+            let mouseY = 0;
+            const windowHalfX = window.innerWidth / 2;
+            const windowHalfY = window.innerHeight / 2;
+            document.addEventListener('mousemove', (event) => {
+                mouseX = (event.clientX - windowHalfX);
+                mouseY = (event.clientY - windowHalfY);
+            });
+
+            const clock = new THREE.Clock();
+            function animate() {
+                const elapsedTime = clock.getElapsedTime();
+                particlesMesh.rotation.y = elapsedTime * 0.05;
+                particlesMesh.rotation.x = mouseY * 0.0001;
+                particlesMesh.rotation.y += mouseX * 0.0001;
+
+                hearts.forEach(heart => {
+                    heart.position.y -= heart.userData.velocity;
+                    heart.rotation.x += heart.userData.rotSpeedX;
+                    heart.rotation.y += heart.userData.rotSpeedY;
+                    heart.rotation.z += heart.userData.rotSpeedZ;
+                    if (heart.position.y < -10) {
+                        heart.position.y = 10 + Math.random() * 5;
+                        heart.position.x = (Math.random() - 0.5) * 20;
+                        heart.userData.velocity = Math.random() * 0.05 + 0.02;
+                    }
+                });
+                renderer.render(scene, camera);
+                requestAnimationFrame(animate);
+            }
+            animate();
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        // Initialize Three.js after load
+        window.addEventListener('load', initThreeJS);
+
+        // --- Countdown Timer ---
+        // USER INSTRUCTION: Set your target date here (e.g., New Year's Eve)
+        const targetDate = new Date("January 1, 2026 00:00:00").getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                // If date passed
+                document.getElementById("days").innerText = "00";
+                document.getElementById("hours").innerText = "00";
+                document.getElementById("minutes").innerText = "00";
+                document.getElementById("seconds").innerText = "00";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = String(days).padStart(2, '0');
+            document.getElementById("hours").innerText = String(hours).padStart(2, '0');
+            document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
+            document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+
+        // --- Audio Control ---
+        const audio = document.getElementById('bg-music');
+        const musicToggleBtn = document.getElementById('music-toggle');
+        const musicIcon = document.getElementById('music-icon');
+        const playerBtn = document.getElementById('player-btn');
+        const playerIcon = document.getElementById('player-icon');
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                musicIcon.innerText = 'music_off';
+                playerIcon.innerText = 'play_arrow';
+                isPlaying = false;
+            } else {
+                audio.play().then(() => {
+                    musicIcon.innerText = 'music_note';
+                    playerIcon.innerText = 'pause';
+                    isPlaying = true;
+                    fireConfetti(); // Celebration when music starts!
+                }).catch(e => {
+                    console.log("Audio play failed (interaction needed): ", e);
+                    alert("Tap anywhere to allow music playback!");
+                });
+            }
+        }
+
+        musicToggleBtn.addEventListener('click', toggleMusic);
+
+        // --- Scroll Actions ---
+        function scrollToGallery() {
+            document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- Lightbox ---
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxCaption = document.getElementById('lightbox-caption');
+
+        function openLightbox(element) {
+            const img = element.querySelector('img');
+            const title = element.querySelector('p.font-bold').innerText;
+            if (!img) return; // Safety
+
+            lightboxImg.src = img.src;
+            lightboxCaption.innerText = title;
+            lightbox.classList.remove('hidden');
+            // small delay to allow display:flex to apply before opacity transition
+            setTimeout(() => {
+                lightbox.classList.remove('opacity-0');
+            }, 10);
+        }
+
+        function closeLightbox() {
+            lightbox.classList.add('opacity-0');
+            setTimeout(() => {
+                lightbox.classList.add('hidden');
+            }, 300);
+        }
+
+        // --- Confetti ---
+        function fireConfetti() {
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+            var hearts = confetti.shapeFromPath({ path: 'M167 72c19,-38 37,-56 75,-56 42,0 76,33 76,75 0,76 -76,151 -151,227 -76,-76 -151,-151 -151,-227 0,-42 33,-75 75,-75 38,0 57,18 76,56z' });
+
+            var interval = setInterval(function () {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+
+                var particleCount = 50 * (timeLeft / duration);
+                var colors = ['#ff0000', '#ff0080', '#d946ef', '#ffd700'];
+                confetti(Object.assign({}, defaults, {
+                    particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 },
+                    shapes: ['heart'], colors: colors, scalar: 2
+                }));
+            }, 250);
+        }
+
+        // Initial simplified confetti burst on load
+        window.addEventListener('load', () => {
+            var colors = ['#ff0000', '#ff0080', '#d946ef', '#ffd700'];
+            confetti({
+                particleCount: 100, spread: 70, origin: { y: 0.6 },
+                shapes: ['heart'], colors: colors
+            });
+        });
+
+    </script>
+    <script>
+        // --- 1. Audio Visualizer Setup ---
+        let audioContext;
+        let analyser;
+        let dataArray;
+        let visualizerCanvas;
+        let visualizerCtx;
+        let isAudioSetup = false;
+
+        function setupAudioContext() {
+            if (isAudioSetup) return;
+
+            const audio = document.getElementById('bg-music');
+            // Check for AudioContext support
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) return; // Fallback for older browsers
+
+            audioContext = new AudioContext();
+            analyser = audioContext.createAnalyser();
+
+            // Re-use source if possible or create new (be careful with CORS if audio was external, but it's local assets)
+            try {
+                const source = audioContext.createMediaElementSource(audio);
+                source.connect(analyser);
+                analyser.connect(audioContext.destination);
+            } catch (e) {
+                console.log("Audio source already connected or error:", e);
+            }
+
+            analyser.fftSize = 256;
+            const bufferLength = analyser.frequencyBinCount;
+            dataArray = new Uint8Array(bufferLength);
+
+            visualizerCanvas = document.getElementById('visualizer-canvas');
+            if (visualizerCanvas) {
+                visualizerCtx = visualizerCanvas.getContext('2d');
+                // Resize canvas
+                visualizerCanvas.width = visualizerCanvas.offsetWidth;
+                visualizerCanvas.height = visualizerCanvas.offsetHeight;
+
+                // Handle resize
+                window.addEventListener('resize', () => {
+                    visualizerCanvas.width = visualizerCanvas.offsetWidth;
+                    visualizerCanvas.height = visualizerCanvas.offsetHeight;
+                });
+            }
+
+            isAudioSetup = true;
+            drawVisualizer();
+        }
+
+        function drawVisualizer() {
+            requestAnimationFrame(drawVisualizer);
+            if (!analyser || !visualizerCtx) return;
+
+            analyser.getByteFrequencyData(dataArray);
+
+            visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+
+            const barWidth = (visualizerCanvas.width / dataArray.length) * 2.5;
+            let barHeight;
+            let x = 0;
+
+            for (let i = 0; i < dataArray.length; i++) {
+                barHeight = dataArray[i] / 2; // Scale down to fit
+
+                // Gradient color
+                const gradient = visualizerCtx.createLinearGradient(0, 0, 0, visualizerCanvas.height);
+                gradient.addColorStop(0, '#d946ef');
+                gradient.addColorStop(1, '#7f13ec');
+
+                visualizerCtx.fillStyle = gradient;
+                visualizerCtx.fillRect(x, visualizerCanvas.height - barHeight, barWidth, barHeight);
+
+                x += barWidth + 1;
+            }
+        }
+
+
+        // --- 2. Advanced Features Initialization ---
+        window.addEventListener('load', () => {
+            initCustomCursor();
+            initTiltEffect();
+            initTypewriterEffect();
+        });
+
+
+        // --- 3. Custom Cursor ---
+        function initCustomCursor() {
+            const canvas = document.getElementById('cursor-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width = window.innerWidth;
+            let height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+
+            const particles = [];
+
+            window.addEventListener('resize', () => {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                // Determine color based on position
+                const color = Math.random() > 0.5 ? '#7f13ec' : '#d946ef';
+                particles.push({
+                    x: e.clientX,
+                    y: e.clientY,
+                    size: Math.random() * 4 + 1,
+                    color: color,
+                    life: 1
+                });
+            });
+
+            function animateCursor() {
+                ctx.clearRect(0, 0, width, height);
+
+                for (let i = 0; i < particles.length; i++) {
+                    const p = particles[i];
+                    ctx.globalAlpha = p.life;
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    p.life -= 0.05;
+                    p.size *= 0.9;
+
+                    if (p.life <= 0) {
+                        particles.splice(i, 1);
+                        i--;
+                    }
+                }
+                requestAnimationFrame(animateCursor);
+            }
+            animateCursor();
+        }
+
+        // --- 4. 3D Tilt Effect ---
+        function initTiltEffect() {
+            const cards = document.querySelectorAll('.tilt-card');
+
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+
+                    const rotateX = ((y - centerY) / centerY) * -10; // Max -10 to 10 deg
+                    const rotateY = ((x - centerX) / centerX) * 10;
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+                });
+            });
+        }
+
+        // --- 5. Typewriter Effect ---
+        function initTypewriterEffect() {
+            const p1 = document.getElementById('typewriter-1');
+            const p2 = document.getElementById('typewriter-2');
+            if (!p1 || !p2) return;
+
+            const text1 = p1.innerText.trim();
+            const text2 = p2.innerText.trim();
+
+            p1.innerText = "";
+            p2.innerText = "";
+            p1.classList.remove('hidden'); // make visible for observer, but empty
+            p2.classList.remove('hidden');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        startTyping(p1, text1, () => {
+                            startTyping(p2, text2);
+                        });
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            observer.observe(p1);
+        }
+
+        function startTyping(element, text, callback) {
+            element.classList.add('typing-cursor');
+            let i = 0;
+            const speed = 30; // ms per char
+
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else {
+                    element.classList.remove('typing-cursor');
+                    if (callback) callback();
+                }
+            }
+            type();
+        }
+
+        // Update toggleMusic to initialize audio context
+        const originalToggleMusic = window.toggleMusic;
+        window.toggleMusic = function () {
+            if (!isAudioSetup) {
+                setupAudioContext();
+            }
+
+            if (isPlaying) {
+                audio.pause();
+                musicIcon.innerText = 'music_off';
+                playerIcon.innerText = 'play_arrow';
+                isPlaying = false;
+            } else {
+                audio.play().then(() => {
+                    musicIcon.innerText = 'music_note';
+                    playerIcon.innerText = 'pause';
+                    isPlaying = true;
+                    fireConfetti();
+
+                    if (audioContext && audioContext.state === 'suspended') {
+                        audioContext.resume();
+                    }
+                }).catch(e => {
+                    console.log("Audio play failed (interaction needed): ", e);
+                    alert("Tap anywhere to allow music playback!");
+                });
+            }
+        };
+
+        // Re-bind listener
+        if (typeof musicToggleBtn !== 'undefined' && musicToggleBtn) {
+            const newMusicBtn = musicToggleBtn.cloneNode(true);
+            musicToggleBtn.parentNode.replaceChild(newMusicBtn, musicToggleBtn);
+            newMusicBtn.addEventListener('click', window.toggleMusic);
+            // Re-bind musicToggleBtn reference
+            // musicToggleBtn = newMusicBtn; // Can't reassign const, but the element ID lookup might work next time?
+            // Actually, `const musicToggleBtn` is block scoped in the previous script.
+            // We can't update it. But `document.getElementById('music-toggle')` will get the new element.
+        }
+
+    </script>
+</body>
+
+</html>
