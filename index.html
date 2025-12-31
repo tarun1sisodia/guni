@@ -226,7 +226,7 @@
     </audio>
 
     <!-- Audio 2: Your Voice Message -->
-    <audio id="voice-note" preload="auto" crossorigin="anonymous">
+    <audio id="voice-note" preload="auto">
         <source src="assets/mine.mp3" type="audio/mpeg">
     </audio>
 
@@ -570,50 +570,53 @@
             requestAnimationFrame(updateLyrics);
         }
 
+        // --- AUDIO ENGINE (ROBUST MODE) ---
+        // Simplified to not use Web Audio API to avoid CORS issues on Netlify
+        // Visualizer is now a simulation synced to playback state
+
         function initAudioContext() {
-            if (isAudioInit) return;
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            audioContext = new AudioContext();
-            analyser = audioContext.createAnalyser();
-
-            // Connect Voice Note to Visualizer
-            const source = audioContext.createMediaElementSource(voiceNote);
-            source.connect(analyser);
-            analyser.connect(audioContext.destination);
-
-            // Just connect BG music to output (no visualizer needed for bg)
-            // Note: MediaElementSource can only be created once per element. 
-            // We only visualize the voice note as per design.
-
-            analyser.fftSize = 128;
-            dataArray = new Uint8Array(analyser.frequencyBinCount);
-            isAudioInit = true;
-
+            // No-op for robust mode, kept to avoid breaking calls
             const canvas = document.getElementById('visualizer-canvas');
             canvas.width = canvas.offsetWidth;
             canvas.height = canvas.offsetHeight;
             drawVisualizer();
         }
 
+        // --- SIMULATED VISUALIZER ---
+        // Guarantees visual feedback without risking audio playback failure
         function drawVisualizer() {
-            requestAnimationFrame(drawVisualizer);
-            if (!analyser) return;
             const canvas = document.getElementById('visualizer-canvas');
             const ctx = canvas.getContext('2d');
-            analyser.getByteFrequencyData(dataArray);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const bars = 50;
+            const barWidth = canvas.width / bars;
 
-            const barWidth = (canvas.width / dataArray.length) * 2.5;
-            let x = 0;
-            for (let i = 0; i < dataArray.length; i++) {
-                const barHeight = dataArray[i] / 2;
-                const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-                gradient.addColorStop(0, '#ec4899');
-                gradient.addColorStop(1, 'transparent');
-                ctx.fillStyle = gradient;
-                ctx.fillRect(x, canvas.height - barHeight, barWidth - 2, barHeight);
-                x += barWidth;
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Only animate vigorously if voice is playing
+                const isPlaying = !voiceNote.paused;
+
+                for (let i = 0; i < bars; i++) {
+                    // Base height + random activity if playing
+                    let barHeight = isPlaying
+                        ? (Math.random() * canvas.height * 0.5) + 10
+                        : 5; // Flatline when paused
+
+                    // Make it look organic
+                    if (isPlaying) {
+                        barHeight *= Math.sin(Date.now() * 0.005 + i * 0.2) * 0.5 + 1;
+                    }
+
+                    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                    gradient.addColorStop(0, '#ec4899');
+                    gradient.addColorStop(1, 'transparent');
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 2, barHeight);
+                }
+
+                requestAnimationFrame(animate);
             }
+            animate();
         }
 
         // --- CONTROLLERS ---
@@ -649,8 +652,8 @@
 
         // 2. Play Voice Message (The Reveal)
         function playVoiceMessage() {
-            if (!isAudioInit) initAudioContext();
-            if (audioContext && audioContext.state === 'suspended') audioContext.resume();
+            // Init simulation if not already running
+            initAudioContext();
 
             // Fade out BG Music
             gsap.to(bgMusic, { volume: 0, duration: 2, onComplete: () => bgMusic.pause() });
