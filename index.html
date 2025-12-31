@@ -226,7 +226,7 @@
     </audio>
 
     <!-- Audio 2: Your Voice Message -->
-    <audio id="voice-note" preload="auto">
+    <audio id="voice-note" preload="auto" crossorigin="anonymous">
         <source src="assets/mine.mp3" type="audio/mpeg">
     </audio>
 
@@ -526,6 +526,13 @@
         const bgMusic = document.getElementById('bg-instrumental'); // The light weight song
         const voiceNote = document.getElementById('voice-note'); // The actual message
 
+        // Add Error Listeners (Restored for Debugging)
+        [bgMusic, voiceNote].forEach(audio => {
+            audio.addEventListener('error', (e) => {
+                console.error(`Audio error on #${audio.id}:`, e.target.error.message, e.target.error);
+            });
+        });
+
         const lyricsContainer = document.getElementById('lyrics-container');
         let isVoicePlaying = false;
 
@@ -654,7 +661,7 @@
 
             // Play Voice Note
             voiceNote.volume = 1.0;
-            voiceNote.play();
+            voiceNote.play().catch(e => console.error("Voice play failed:", e));
             isVoicePlaying = true;
             updateLyrics();
         }

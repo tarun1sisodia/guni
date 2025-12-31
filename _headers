@@ -1,0 +1,3 @@
+# Enable CORS for audio files to allow Web Audio API usage
+/*.mp3
+  Access-Control-Allow-Origin: *
