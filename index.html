@@ -443,7 +443,7 @@
 
         <!-- SECTION 2: 3D MEMORY GALLERY -->
         <section id="gallery" class="w-full py-32 px-4 md:px-8 relative z-10">
-            <div class="max-w-7xl mx-auto reveal-on-scroll">
+            <div class="max-w-7xl mx-auto">
                 <div class="flex flex-col items-center mb-16 text-center">
                     <span
                         class="text-secondary font-handwriting text-4xl mb-3 transform -rotate-3 inline-block">Unforgettable
@@ -455,7 +455,7 @@
 
                 <div class="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
                     <!-- Image Cards -->
-                    <div class="break-inside-avoid relative group rounded-3xl overflow-hidden cursor-none tilt-card bg-dark-surface shadow-2xl"
+                    <div class="break-inside-avoid relative group rounded-3xl overflow-hidden cursor-none tilt-card bg-dark-surface shadow-2xl reveal-on-scroll"
                         onclick="openLightbox(this)">
                         <div class="tilt-content">
                             <img src="assets/img1.png"
@@ -469,7 +469,7 @@
                         </div>
                     </div>
 
-                    <div class="break-inside-avoid relative group rounded-3xl overflow-hidden cursor-none tilt-card bg-dark-surface shadow-2xl"
+                    <div class="break-inside-avoid relative group rounded-3xl overflow-hidden cursor-none tilt-card bg-dark-surface shadow-2xl reveal-on-scroll"
                         onclick="openLightbox(this)">
                         <div class="tilt-content">
                             <img src="assets/img2.png"
@@ -483,7 +483,7 @@
                     </div>
 
                     <div
-                        class="break-inside-avoid relative p-10 bg-gradient-to-br from-primary/20 to-secondary/20 border border-white/5 rounded-3xl flex flex-col justify-center items-center text-center gap-6 min-h-[300px] tilt-card">
+                        class="break-inside-avoid relative p-10 bg-gradient-to-br from-primary/20 to-secondary/20 border border-white/5 rounded-3xl flex flex-col justify-center items-center text-center gap-6 min-h-[300px] tilt-card reveal-on-scroll">
                         <span class="material-symbols-outlined text-5xl text-white/50">format_quote</span>
                         <p class="font-handwriting text-3xl md:text-4xl text-white leading-relaxed">"In all the world,
                             there is no heart for me like yours. In all the world, there is no love for you like mine."
@@ -491,7 +491,7 @@
                         <p class="text-sm uppercase tracking-widest text-secondary font-bold">- Us</p>
                     </div>
 
-                    <div class="break-inside-avoid relative group rounded-3xl overflow-hidden cursor-none tilt-card bg-dark-surface shadow-2xl"
+                    <div class="break-inside-avoid relative group rounded-3xl overflow-hidden cursor-none tilt-card bg-dark-surface shadow-2xl reveal-on-scroll"
                         onclick="openLightbox(this)">
                         <div class="tilt-content">
                             <img src="assets/img3.png"
@@ -737,9 +737,7 @@
 
         // 1. Entrance: Play BG Music Only
         enterBtn.addEventListener('click', () => {
-            // UNLOCK SCROLL & RESET POSITION
-            document.body.classList.remove('overflow-hidden');
-            document.body.classList.add('overflow-x-hidden');
+            // DO NOT UNLOCK SCROLL HERE - Wait for "Start Our Journey"
             window.scrollTo(0, 0);
 
             bgMusic.volume = 0.5; // Set reasonable volume
@@ -926,14 +924,14 @@
         document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
 
         // --- 4. COUNTDOWN & REVEAL LOGIC ---
-        // TEST MODE: Set target to 15 seconds from now for verification
-        // TODO: Change back to "January 1, 2026 00:00:00" before final deployment
+        // TARGET DATE: Jan 1, 2026
         const TARGET_DATE = new Date(Date.now() + 20000).getTime();
-        // const TARGET_DATE = new Date("January 1, 2026 00:00:00").getTime();
+        //  const TARGET_DATE = new Date("January 1, 2026 00:00:00").getTime();
 
         const finalCountdownOverlay = document.getElementById('final-countdown');
         const bigCount = document.getElementById('big-count');
         const grandRevealOverlay = document.getElementById('grand-reveal');
+        const waitingHeader = document.querySelector('h1 span.text-gradient'); // Ref to "2026..."
         let revealTriggered = false;
 
         function updateTimer() {
@@ -973,6 +971,16 @@
             finalCountdownOverlay.classList.add('hidden-overlay'); // Hide countdown
             grandRevealOverlay.classList.remove('hidden-overlay'); // Show Reveal
 
+            // Update the "Waiting" text to celebration text
+            if (waitingHeader) { // Define waitingHeader globally or locally
+                // It is defined globally in previous step, but let's be safe
+                const h1 = waitingHeader.parentElement;
+                if (h1) {
+                    waitingHeader.innerText = "2026 is Here!";
+                    h1.innerHTML = h1.innerHTML.replace("Waiting for", "Welcome to");
+                }
+            }
+
             // Play Celebration Audio if available (optional)
             // bgMusic.play(); 
 
@@ -994,6 +1002,12 @@
             // Unlock page
             document.body.classList.remove('overflow-hidden');
             document.body.classList.add('overflow-x-hidden');
+
+            // Ensure controls are visible & music plays
+            document.getElementById('controls-ui').classList.remove('opacity-0');
+            if (document.getElementById('bg-instrumental').paused) {
+                document.getElementById('bg-instrumental').play().catch(e => console.log("Auto-play blocked"));
+            }
 
             // Fade out overlay
             grandRevealOverlay.style.opacity = '0';
