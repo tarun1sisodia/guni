@@ -411,7 +411,8 @@
                     </p>
                 </div>
 
-                <div class="glass-panel p-6 md:p-8 rounded-3xl w-full max-w-2xl animate-fade-in-up hover:border-secondary/30 transition-colors duration-500"
+                <div id="timer-container"
+                    class="glass-panel p-6 md:p-8 rounded-3xl w-full max-w-2xl animate-fade-in-up hover:border-secondary/30 transition-colors duration-500"
                     style="animation-delay: 0.4s;">
                     <div class="grid grid-cols-4 gap-4 text-center divide-x divide-white/10">
                         <div class="flex flex-col"><span class="text-3xl md:text-5xl font-bold font-mono text-white"
@@ -550,7 +551,7 @@
                     </div>
                 </div>
 
-                <div class="pt-8">
+                <div id="signature-block" class="pt-8 opacity-0 transition-opacity duration-1000">
                     <p class="font-handwriting text-3xl text-white/80">Forever Yours,<br><span
                             class="text-4xl text-white font-bold">Tarun</span></p>
                 </div>
@@ -607,10 +608,10 @@
         // --- 2. SMART VOICE SYNC ---
         // UPDATE SENTENCES HERE WITH START AND END TIMES
         const SENTENCES = [
-            { text: "My dearest Gunjan,", start: 0.5, end: 2.0 },
-            { text: "I know this year has been crazy,", start: 2.5, end: 5.0 },
+            { text: "My dearest Guni ,", start: 0.5, end: 2.0 },
+            { text: "I know this year has been crazy alot of highs and lows you go through,", start: 2.5, end: 5.0 },
             { text: "but holding your hand makes it all worth it.", start: 5.5, end: 9.0 },
-            { text: "I love you.", start: 9.5, end: 11.0 }
+            { text: "I love you more than words can express.", start: 9.5, end: 11.0 }
         ];
 
         // Generator Logic
