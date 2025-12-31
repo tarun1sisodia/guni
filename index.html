@@ -149,6 +149,7 @@
         .text-gradient {
             background: linear-gradient(to right, #a78bfa, #f472b6);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -243,6 +244,7 @@
             font-weight: 900;
             background: linear-gradient(to bottom, #fff, #ec4899);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             font-family: 'Plus Jakarta Sans', sans-serif;
             animation: heart-beat 1s infinite;
@@ -260,6 +262,89 @@
             100% {
                 transform: scale(1);
             }
+        }
+
+        /* --- 3D CAROUSEL STYLES --- */
+        :root {
+            --carousel-radius: 350px;
+            --card-width: 300px;
+            --card-height: 450px;
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --carousel-radius: 160px;
+                /* Tighter radius for mobile */
+                --card-width: 220px;
+                --card-height: 340px;
+            }
+        }
+
+        .carousel-scene {
+            perspective: 1000px;
+            width: 100%;
+            height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: visible;
+        }
+
+        .carousel {
+            width: var(--card-width);
+            height: var(--card-height);
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1s;
+        }
+
+        .carousel-card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            /* Ensure backface visibility if we want to see them rotate */
+            backface-visibility: hidden;
+        }
+
+        /* Specific rotations using variables */
+        .carousel-card:nth-child(1) {
+            transform: rotateY(0deg) translateZ(var(--carousel-radius));
+        }
+
+        .carousel-card:nth-child(2) {
+            transform: rotateY(120deg) translateZ(var(--carousel-radius));
+        }
+
+        .carousel-card:nth-child(3) {
+            transform: rotateY(240deg) translateZ(var(--carousel-radius));
+        }
+
+        .carousel-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Better text overlay */
+        .carousel-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem;
+            padding-bottom: 2.5rem;
+            /* Extra padding for mobile bottom bar areas */
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.6) 50%, transparent);
+            transform: translateZ(1px);
+            /* Slight Z-boost to prevent clipping */
         }
     </style>
 </head>
@@ -445,7 +530,7 @@
         <!-- SECTION 2: 3D MEMORY GALLERY -->
         <section id="gallery" class="w-full py-32 px-4 md:px-8 relative z-10">
             <div class="max-w-7xl mx-auto">
-                <div class="flex flex-col items-center mb-16 text-center">
+                <div class="flex flex-col items-center mb-10 text-center">
                     <span
                         class="text-secondary font-handwriting text-4xl mb-3 transform -rotate-3 inline-block">Unforgettable
                         Moments</span>
@@ -454,57 +539,44 @@
                         Our Journey So Far</h2>
                 </div>
 
-                <div class="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
-                    <!-- Image Cards -->
-                    <div class="break-inside-avoid relative group rounded-3xl overflow-hidden cursor-none tilt-card bg-dark-surface shadow-2xl reveal-on-scroll"
-                        onclick="openLightbox(this)">
-                        <div class="tilt-content">
-                            <img src="assets/img1.png"
-                                class="w-full h-auto block object-cover transition-transform duration-700 group-hover:scale-110"
-                                alt="Memory">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
-                                <p class="font-handwriting text-3xl text-secondary mb-1">First Date</p>
-                                <p class="text-sm text-slate-300 font-medium">The moment time stood still</p>
+                <!-- 3D PORTRAIT CAROUSEL -->
+                <div class="carousel-scene" id="scene">
+                    <div class="carousel" id="carousel">
+                        <!-- Card 1 -->
+                        <div class="carousel-card">
+                            <img src="assets/img1.png" alt="Memory 1">
+                            <div class="carousel-overlay">
+                                <p class="text-white font-handwriting text-2xl">First Date</p>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="break-inside-avoid relative group rounded-3xl overflow-hidden cursor-none tilt-card bg-dark-surface shadow-2xl reveal-on-scroll"
-                        onclick="openLightbox(this)">
-                        <div class="tilt-content">
-                            <img src="assets/img2.png"
-                                class="w-full h-auto block object-cover transition-transform duration-700 group-hover:scale-110"
-                                alt="Memory">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
-                                <p class="font-handwriting text-3xl text-secondary mb-1">Crazy Adventures</p>
+                        <!-- Card 2 -->
+                        <div class="carousel-card">
+                            <img src="assets/img2.png" alt="Memory 2">
+                            <div class="carousel-overlay">
+                                <p class="text-white font-handwriting text-2xl">Crazy Adventures</p>
                             </div>
                         </div>
-                    </div>
-
-                    <div
-                        class="break-inside-avoid relative p-10 bg-gradient-to-br from-primary/20 to-secondary/20 border border-white/5 rounded-3xl flex flex-col justify-center items-center text-center gap-6 min-h-[300px] tilt-card reveal-on-scroll">
-                        <span class="material-symbols-outlined text-5xl text-white/50">format_quote</span>
-                        <p class="font-handwriting text-3xl md:text-4xl text-white leading-relaxed">"In all the world,
-                            there is no heart for me like yours. In all the world, there is no love for you like mine."
-                        </p>
-                        <p class="text-sm uppercase tracking-widest text-secondary font-bold">- Us</p>
-                    </div>
-
-                    <div class="break-inside-avoid relative group rounded-3xl overflow-hidden cursor-none tilt-card bg-dark-surface shadow-2xl reveal-on-scroll"
-                        onclick="openLightbox(this)">
-                        <div class="tilt-content">
-                            <img src="assets/img3.png"
-                                class="w-full h-auto block object-cover transition-transform duration-700 group-hover:scale-110"
-                                alt="Memory">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
-                                <p class="font-handwriting text-3xl text-secondary mb-1">Your Smile</p>
+                        <!-- Card 3 -->
+                        <div class="carousel-card">
+                            <img src="assets/img3.png" alt="Memory 3">
+                            <div class="carousel-overlay">
+                                <p class="text-white font-handwriting text-2xl">Your Smile</p>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="flex justify-center gap-6 mt-8">
+                    <button onclick="rotateCarousel(-1)"
+                        class="p-4 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md text-white transition-all hover:scale-110">
+                        <span class="material-symbols-outlined">arrow_back</span>
+                    </button>
+                    <button onclick="rotateCarousel(1)"
+                        class="p-4 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md text-white transition-all hover:scale-110">
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </button>
+                </div>
+
             </div>
         </section>
 
@@ -1027,7 +1099,11 @@
             const timerContainer = document.getElementById('timer-container');
             if (timerContainer) timerContainer.classList.add('hidden');
 
-            // Massive confetti burst (Fireworks moved to button click)
+
+            // FIREWORKS START NOW (Immediate)
+            startFireworks();
+
+            // Massive confetti burst
             const duration = 15 * 1000;
             const end = Date.now() + duration;
 
@@ -1049,8 +1125,8 @@
                 document.getElementById('bg-instrumental').play().catch(e => console.log("Auto-play blocked"));
             }
 
-            // FIREWORKS START NOW
-            startFireworks();
+            // FIREWORKS ALREADY STARTED
+            // startFireworks();
 
             // Fade out overlay
             grandRevealOverlay.style.opacity = '0';
@@ -1108,15 +1184,27 @@
                     else particles.splice(i, 1);
                 });
 
-                if (Math.random() < 0.05) {
+                if (Math.random() < 0.15) { // Increased frequency from 0.05 to 0.15
                     const x = Math.random() * canvas.width;
                     const y = Math.random() * canvas.height * 0.5;
                     const color = `hsl(${Math.random() * 360}, 50%, 50%)`;
-                    for (let i = 0; i < 30; i++) particles.push(new Particle(x, y, color));
+                    for (let i = 0; i < 40; i++) particles.push(new Particle(x, y, color)); // More particles per explosion
                 }
             }
             animate();
         }
+
+        // --- CAROUSEL LOGIC ---
+        let currDeg = 0;
+        function rotateCarousel(direction) {
+            currDeg += direction * 120; // 3 items = 360 / 3 = 120deg
+            document.getElementById('carousel').style.transform = `rotateY(${currDeg}deg)`;
+        }
+
+        // Auto rotate every 3 seconds
+        setInterval(() => {
+            rotateCarousel(-1);
+        }, 3000);
 
     </script>
 </body>
