@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy New Year, Gunjan! ❤️</title>
+    <title>For Guni ❤️</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1"
         rel="stylesheet" />
 
-    <!-- Firebase SDKs (Added for Tracking) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -44,6 +44,7 @@
                         'float': 'float 6s ease-in-out infinite',
                         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'fade-in-up': 'fadeInUp 1s ease-out forwards',
+                        'bounce-subtle': 'bounceSubtle 2s infinite',
                     },
                     keyframes: {
                         float: {
@@ -53,6 +54,10 @@
                         fadeInUp: {
                             '0%': { opacity: '0', transform: 'translateY(20px)' },
                             '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        bounceSubtle: {
+                            '0%, 100%': { transform: 'translateY(-5%)' },
+                            '50%': { transform: 'translateY(0)' },
                         }
                     }
                 }
@@ -80,27 +85,45 @@
             mix-blend-mode: screen;
         }
 
-        /* Voice Glow Styles (New) */
+        /* Voice Glow Styles (Updated for Secret Reveal) */
         .lyric-word {
-            opacity: 0.2;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            /* Hidden by default */
+            filter: blur(12px);
+            /* Blurred by default */
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             display: inline-block;
-            margin-right: 0.3em;
-            filter: blur(1px);
+            margin-right: 0.35em;
+            transform: translateY(10px);
         }
 
         .lyric-active {
             opacity: 1;
-            transform: scale(1.1);
-            color: #fff;
-            text-shadow: 0 0 15px rgba(236, 72, 153, 0.8), 0 0 30px rgba(139, 92, 246, 0.6);
             filter: blur(0);
+            transform: translateY(0) scale(1.1);
+            color: #fff;
+            text-shadow: 0 0 20px rgba(236, 72, 153, 0.9), 0 0 40px rgba(139, 92, 246, 0.7);
         }
 
         .lyric-passed {
-            opacity: 0.7;
-            color: #e2e8f0;
+            opacity: 0.8;
             filter: blur(0);
+            transform: translateY(0);
+            color: #e2e8f0;
+        }
+
+        /* Message Overlay */
+        .message-locked {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 5, 24, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease;
         }
 
         /* 3D Tilt Card Effect */
@@ -195,8 +218,13 @@
     <canvas id="cursor-canvas" class="cursor-trail"></canvas>
 
     <!-- 3. AUDIO ELEMENTS -->
-    <!-- MAKE SURE 'assets/mine.mp3' EXISTS -->
-    <audio id="bg-music" loop crossorigin="anonymous">
+    <!-- Audio 1: Background Music (Instrumental) -->
+    <audio id="bg-instrumental" loop crossorigin="anonymous">
+        <source src="assets/instrumental.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Audio 2: Your Voice Message -->
+    <audio id="voice-note" crossorigin="anonymous">
         <source src="assets/mine.mp3" type="audio/mpeg">
     </audio>
 
@@ -217,7 +245,7 @@
         </div>
     </div>
 
-    <!-- Floating Controls -->
+    <!-- Floating Controls (For Background Music) -->
     <div class="fixed top-6 right-6 z-50 flex gap-4 opacity-0 transition-opacity duration-1000" id="controls-ui">
         <button id="music-toggle"
             class="glass-panel text-white p-3 rounded-full hover:bg-white/10 transition-all duration-300 shadow-lg group">
@@ -226,7 +254,7 @@
         </button>
     </div>
 
-    <!-- 4. FLOATING ACTION BUTTON (Send Love) -->
+    <!-- 4. FLOATING ACTION BUTTON -->
     <div class="fixed bottom-8 right-6 z-50">
         <button onclick="sendLove()"
             class="group relative w-16 h-16 bg-gradient-to-tr from-pink-600 to-purple-600 rounded-full flex items-center justify-center text-white shadow-xl shadow-pink-600/30 hover:shadow-pink-600/60 hover:scale-110 transition-all duration-300">
@@ -316,7 +344,7 @@
                 </div>
 
                 <div class="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
-
+                    <!-- Image Cards -->
                     <div class="break-inside-avoid relative group rounded-3xl overflow-hidden cursor-none tilt-card bg-dark-surface shadow-2xl"
                         onclick="openLightbox(this)">
                         <div class="tilt-content">
@@ -369,44 +397,46 @@
             </div>
         </section>
 
-        <!-- SECTION 3: VOICE GLOW LETTER -->
+        <!-- SECTION 3: SECRET VOICE MESSAGE (BLURRED INITIALLY) -->
         <section class="w-full py-20 px-6 flex justify-center items-center min-h-[90vh] relative reveal-on-scroll">
             <div
                 class="glass-panel w-full max-w-3xl p-8 md:p-14 rounded-[2rem] relative overflow-hidden text-center flex flex-col items-center gap-8 border-t border-white/10 shadow-2xl">
+
+                <!-- BLUR OVERLAY & NOTIFICATION -->
+                <div id="message-lock" class="message-locked rounded-[2rem]">
+                    <div
+                        class="glass-panel p-6 rounded-2xl flex flex-col items-center gap-4 border border-white/20 shadow-2xl animate-bounce-subtle">
+                        <div
+                            class="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center animate-pulse">
+                            <span class="material-symbols-outlined text-3xl text-white">graphic_eq</span>
+                        </div>
+                        <div class="text-center">
+                            <h3 class="font-bold text-white text-lg">New Voice Message</h3>
+                            <p class="text-xs text-slate-300 uppercase tracking-widest">From Tarun</p>
+                        </div>
+                        <button onclick="playVoiceMessage()"
+                            class="mt-2 px-8 py-3 bg-white text-primary rounded-full font-bold hover:scale-105 transition-transform flex items-center gap-2">
+                            <span class="material-symbols-outlined filled">play_arrow</span>
+                            Play Me
+                        </button>
+                    </div>
+                </div>
 
                 <canvas id="visualizer-canvas"
                     class="absolute bottom-0 left-0 w-full h-48 opacity-20 pointer-events-none"></canvas>
 
                 <div
-                    class="w-20 h-20 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center text-white shadow-lg shadow-primary/30 animate-float">
+                    class="w-20 h-20 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center text-white shadow-lg shadow-primary/30">
                     <span class="material-symbols-outlined text-4xl">local_florist</span>
                 </div>
 
                 <div class="space-y-8 relative z-10 w-full">
                     <h2 class="font-handwriting text-5xl md:text-6xl text-white drop-shadow-lg">My Promise to You</h2>
 
-                    <!-- LYRIC CONTAINER -->
+                    <!-- LYRIC CONTAINER (Initially Hidden/Blurred) -->
                     <div id="lyrics-container"
-                        class="prose prose-invert prose-lg leading-loose font-light min-h-[150px] max-w-xl mx-auto text-xl md:text-2xl font-sans text-slate-200">
-                        <span class="text-white/30 text-base italic">(Tap 'Play Our Song' below to listen...)</span>
-                    </div>
-                </div>
-
-                <!-- Custom Music Player Display (Triggers Voice Sync) -->
-                <div class="w-full max-w-md bg-black/40 backdrop-blur-md p-4 rounded-2xl flex items-center gap-5 border border-white/5 hover:border-white/10 transition-colors cursor-pointer group"
-                    onclick="toggleMusic()">
-                    <div
-                        class="h-14 w-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg group-hover:scale-105 transition-transform">
-                        <span class="material-symbols-outlined text-white animate-pulse">equalizer</span>
-                    </div>
-                    <div class="flex-1 text-left overflow-hidden">
-                        <p class="font-bold text-white text-base truncate group-hover:text-secondary transition-colors">
-                            Play Our Song</p>
-                        <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">Tap to Pause/Play</p>
-                    </div>
-                    <div
-                        class="w-10 h-10 rounded-full bg-white text-dark flex items-center justify-center shadow-lg group-hover:bg-secondary group-hover:text-white transition-colors">
-                        <span class="material-symbols-outlined filled" id="player-icon">play_arrow</span>
+                        class="prose prose-invert prose-lg leading-loose font-light min-h-[200px] max-w-xl mx-auto text-xl md:text-3xl font-sans text-slate-200">
+                        <!-- Words will be injected here -->
                     </div>
                 </div>
 
@@ -440,11 +470,11 @@
 
     <!-- SCRIPTS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
     <script>
-        // --- 1. FIREBASE SETUP (For Tracking) ---
+        // --- 1. FIREBASE SETUP ---
         let db;
-
         const firebaseConfig = {
             apiKey: "AIzaSyAoI3WktQq7KHLGJ0IfcyeJaIRZImdI4CM",
             authDomain: "guni1chauhan.firebaseapp.com",
@@ -462,91 +492,94 @@
                 firebase.auth().signInAnonymously().catch(e => console.error("Auth Error", e));
                 console.log("Firebase Connected");
             }
-        } catch (e) {
-            console.log("Firebase config missing or error. Tracking disabled.");
-        }
+        } catch (e) { console.log("Firebase config missing or error. Tracking disabled."); }
 
-        // --- 2. VOICE DATA SETUP (For Lyric Glow) ---
-        // UPDATE THIS LIST WITH YOUR TIMESTAMPS
-        const VOICE_DATA = [
-            { text: "My", time: 0.5 },
-            { text: "dearest", time: 1.0 },
-            { text: "Gunjan,", time: 1.8 },
-            { text: "I", time: 2.5 },
-            { text: "know", time: 2.8 },
-            { text: "this", time: 3.2 },
-            { text: "year", time: 3.6 },
-            { text: "has", time: 4.0 },
-            { text: "been", time: 4.3 },
-            { text: "crazy,", time: 4.8 },
-            { text: "but", time: 5.5 },
-            { text: "holding", time: 6.0 },
-            { text: "your", time: 6.4 },
-            { text: "hand", time: 6.8 },
-            { text: "makes", time: 7.2 },
-            { text: "it", time: 7.5 },
-            { text: "all", time: 7.8 },
-            { text: "worth", time: 8.2 },
-            { text: "it.", time: 8.8 },
-            { text: "I", time: 9.5 },
-            { text: "love", time: 9.8 },
-            { text: "you.", time: 10.5 }
+        // --- 2. SMART VOICE SYNC ---
+        // UPDATE SENTENCES HERE WITH START AND END TIMES
+        const SENTENCES = [
+            { text: "My dearest Gunjan,", start: 0.5, end: 2.0 },
+            { text: "I know this year has been crazy,", start: 2.5, end: 5.0 },
+            { text: "but holding your hand makes it all worth it.", start: 5.5, end: 9.0 },
+            { text: "I love you.", start: 9.5, end: 11.0 }
         ];
 
-        // --- CONFIG ---
+        // Generator Logic
+        const VOICE_DATA = [];
+        SENTENCES.forEach(sentence => {
+            const words = sentence.text.split(" ");
+            const duration = sentence.end - sentence.start;
+            const timePerWord = duration / words.length;
+            words.forEach((word, i) => {
+                VOICE_DATA.push({ text: word, time: sentence.start + (i * timePerWord) });
+            });
+        });
+
         const TARGET_DATE = new Date("January 1, 2026 00:00:00").getTime();
 
-        // --- AUDIO & VOICE SYNC LOGIC ---
+        // --- AUDIO ENGINE ---
         let audioContext, analyser, dataArray;
         let isAudioInit = false;
-        const audioElement = document.getElementById('bg-music');
-        const lyricsContainer = document.getElementById('lyrics-container');
-        let isPlaying = false;
 
+        // Audio Element References
+        const bgMusic = document.getElementById('bg-instrumental'); // The light weight song
+        const voiceNote = document.getElementById('voice-note'); // The actual message
+
+        const lyricsContainer = document.getElementById('lyrics-container');
+        let isVoicePlaying = false;
+
+        // Initialize Lyrics (Hidden State)
         function initLyrics() {
             lyricsContainer.innerHTML = '';
             VOICE_DATA.forEach((item, index) => {
                 const span = document.createElement('span');
-                span.innerText = item.text;
-                span.className = 'lyric-word';
+                span.innerText = item.text + " ";
+                span.className = 'lyric-word'; // Start blurred/hidden
                 span.id = `word-${index}`;
                 lyricsContainer.appendChild(span);
             });
         }
 
+        // Loop for Revealing Lyrics
         function updateLyrics() {
-            if (!isPlaying) return;
-            const currentTime = audioElement.currentTime;
+            if (!isVoicePlaying) return;
+            const currentTime = voiceNote.currentTime;
 
             VOICE_DATA.forEach((item, index) => {
                 const span = document.getElementById(`word-${index}`);
                 if (currentTime >= item.time) {
-                    const nextTime = VOICE_DATA[index + 1] ? VOICE_DATA[index + 1].time : item.time + 1;
-                    if (currentTime < nextTime) {
-                        span.className = 'lyric-word lyric-active';
-                    } else {
-                        span.className = 'lyric-word lyric-passed';
+                    span.className = 'lyric-word lyric-active'; // Glow active word
+
+                    // Mark previous words as passed (readable but not glowing)
+                    for (let i = 0; i < index; i++) {
+                        const prevSpan = document.getElementById(`word-${i}`);
+                        if (prevSpan.classList.contains('lyric-active')) {
+                            prevSpan.className = 'lyric-word lyric-passed';
+                        }
                     }
-                } else {
-                    span.className = 'lyric-word';
                 }
             });
             requestAnimationFrame(updateLyrics);
         }
 
-        function initAudio() {
+        function initAudioContext() {
             if (isAudioInit) return;
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             audioContext = new AudioContext();
             analyser = audioContext.createAnalyser();
-            const source = audioContext.createMediaElementSource(audioElement);
+
+            // Connect Voice Note to Visualizer
+            const source = audioContext.createMediaElementSource(voiceNote);
             source.connect(analyser);
             analyser.connect(audioContext.destination);
+
+            // Just connect BG music to output (no visualizer needed for bg)
+            // Note: MediaElementSource can only be created once per element. 
+            // We only visualize the voice note as per design.
+
             analyser.fftSize = 128;
             dataArray = new Uint8Array(analyser.frequencyBinCount);
             isAudioInit = true;
 
-            // Visualizer Init
             const canvas = document.getElementById('visualizer-canvas');
             canvas.width = canvas.offsetWidth;
             canvas.height = canvas.offsetHeight;
@@ -578,12 +611,18 @@
         const enterBtn = document.getElementById('enter-btn');
         const overlay = document.getElementById('entrance-overlay');
         const controlsUI = document.getElementById('controls-ui');
+        const messageLock = document.getElementById('message-lock');
+        const musicToggleBtn = document.getElementById('music-toggle');
 
+        // 1. Entrance: Play BG Music Only
         enterBtn.addEventListener('click', () => {
-            initAudio();
-            toggleMusic();
+            bgMusic.volume = 0.5; // Set reasonable volume
+            bgMusic.play().catch(e => console.log("Audio play failed", e));
+
             overlay.classList.add('opacity-0', 'pointer-events-none');
             controlsUI.classList.remove('opacity-0');
+            initLyrics(); // Prepare lyrics (hidden)
+
             // Confetti
             var duration = 3 * 1000;
             var end = Date.now() + duration;
@@ -594,57 +633,61 @@
             }());
         });
 
-        function toggleMusic() {
-            if (!isAudioInit) initAudio();
+        // 2. Play Voice Message (The Reveal)
+        function playVoiceMessage() {
+            if (!isAudioInit) initAudioContext();
             if (audioContext && audioContext.state === 'suspended') audioContext.resume();
 
-            const musicIcon = document.getElementById('music-icon');
-            const playerIcon = document.getElementById('player-icon');
+            // Fade out BG Music
+            gsap.to(bgMusic, { volume: 0, duration: 2, onComplete: () => bgMusic.pause() });
 
-            if (isPlaying) {
-                audioElement.pause();
-                musicIcon.innerText = 'music_off';
-                if (playerIcon) playerIcon.innerText = 'play_arrow';
-                isPlaying = false;
-            } else {
-                audioElement.play();
-                musicIcon.innerText = 'music_note';
-                if (playerIcon) playerIcon.innerText = 'pause';
-                isPlaying = true;
+            // Hide the Lock Overlay
+            messageLock.style.opacity = '0';
+            setTimeout(() => { messageLock.style.display = 'none'; }, 800);
 
-                // Initialize Lyrics logic
-                if (document.getElementById('lyrics-container').children.length === 1) {
-                    initLyrics();
-                }
-                updateLyrics();
-            }
+            // Play Voice Note
+            voiceNote.volume = 1.0;
+            voiceNote.play();
+            isVoicePlaying = true;
+            updateLyrics();
         }
-        document.getElementById('music-toggle').addEventListener('click', toggleMusic);
+        // Make function globally available for button onclick
+        window.playVoiceMessage = playVoiceMessage;
+
+        // 3. Toggle BG Music (Top Right Button)
+        musicToggleBtn.addEventListener('click', () => {
+            if (isVoicePlaying) {
+                // If voice is playing, toggle voice
+                if (voiceNote.paused) voiceNote.play();
+                else voiceNote.pause();
+            } else {
+                // Toggle BG music
+                if (bgMusic.paused) bgMusic.play();
+                else bgMusic.pause();
+            }
+
+            // Icon update
+            const icon = document.getElementById('music-icon');
+            icon.innerText = (bgMusic.paused && voiceNote.paused) ? 'music_off' : 'music_note';
+        });
+
 
         // --- SEND LOVE & TRACKING ---
         async function sendLove() {
-            // Visuals
             const defaults = { origin: { y: 0.9, x: 0.9 }, spread: 30, startVelocity: 40, scalar: 2 };
             confetti({ ...defaults, particleCount: 20, shapes: ['heart'], colors: ['#ec4899', '#ef4444'] });
-
-            // Database Update
             if (db) {
                 const docRef = db.collection('love_clicks').doc('summary');
                 try {
                     await db.runTransaction(async (transaction) => {
                         const doc = await transaction.get(docRef);
-                        if (!doc.exists) {
-                            transaction.set(docRef, { count: 1 });
-                        } else {
-                            transaction.update(docRef, { count: (doc.data().count || 0) + 1 });
-                        }
+                        if (!doc.exists) transaction.set(docRef, { count: 1 });
+                        else transaction.update(docRef, { count: (doc.data().count || 0) + 1 });
                     });
-                    console.log("Love Sent & Tracked!");
-                } catch (e) { console.error("Tracking failed", e); }
+                } catch (e) { }
             }
         }
 
-        // --- ADMIN TRIGGER ---
         document.getElementById('admin-trigger').addEventListener('dblclick', async () => {
             document.getElementById('admin-modal').style.display = 'flex';
             if (db) {
@@ -653,7 +696,7 @@
             }
         });
 
-        // --- THREE.JS BACKGROUND (Preserved) ---
+        // --- THREE.JS BACKGROUND ---
         function initThreeJS() {
             const scene = new THREE.Scene();
             scene.fog = new THREE.FogExp2(0x0f0518, 0.002);
@@ -665,7 +708,6 @@
             document.body.prepend(container);
             container.appendChild(renderer.domElement);
 
-            // Hearts
             const heartShape = new THREE.Shape();
             const x = 0, y = 0;
             heartShape.moveTo(x + 5, y + 5);
@@ -688,7 +730,6 @@
                 hearts.push(mesh);
             }
 
-            // Stars
             const pGeom = new THREE.BufferGeometry();
             const pCount = 1500;
             const pPos = new Float32Array(pCount * 3);
@@ -705,7 +746,6 @@
             const clock = new THREE.Clock();
             function animate() {
                 requestAnimationFrame(animate);
-                const time = clock.getElapsedTime();
                 scene.rotation.y += 0.001;
                 scene.rotation.x += (mouseY - scene.rotation.x) * 0.05;
                 scene.rotation.y += (mouseX - scene.rotation.y) * 0.05;
@@ -746,7 +786,7 @@
         function scrollToGallery() { document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' }); }
         function openLightbox(el) {
             document.getElementById('lightbox-img').src = el.querySelector('img').src;
-            document.getElementById('lightbox-caption').innerText = el.querySelector('p').innerText; // Fix caption selector
+            document.getElementById('lightbox-caption').innerText = el.querySelector('p').innerText;
             const lb = document.getElementById('lightbox'); lb.classList.remove('hidden');
             setTimeout(() => { lb.classList.remove('opacity-0'); document.getElementById('lightbox-img').classList.remove('scale-95'); document.getElementById('lightbox-img').classList.add('scale-100'); }, 10);
         }
