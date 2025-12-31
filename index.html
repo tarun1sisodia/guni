@@ -883,7 +883,7 @@
                 mesh.position.set((Math.random() - 0.5) * 40, (Math.random() - 0.5) * 40, (Math.random() - 0.5) * 40);
                 const s = Math.random() * 0.05 + 0.02;
                 mesh.scale.set(s, -s, s);
-                mesh.userData = { velY: Math.random() * 0.02 + 0.01, velRot: (Math.random() - 0.5) * 0.02 };
+                mesh.userData = { velY: Math.random() * 0.02 + 0.01, velRot: (Math.random() - 0.5) * 0.02, originalScale: s };
                 scene.add(mesh);
                 hearts.push(mesh);
             }
@@ -904,6 +904,7 @@
             const clock = new THREE.Clock();
             function animate() {
                 requestAnimationFrame(animate);
+                const time = Date.now() * 0.001;
                 scene.rotation.y += 0.001;
                 scene.rotation.x += (mouseY - scene.rotation.x) * 0.05;
                 scene.rotation.y += (mouseX - scene.rotation.y) * 0.05;
@@ -912,6 +913,10 @@
                     h.rotation.z += h.userData.velRot;
                     h.rotation.y += h.userData.velRot;
                     if (h.position.y > 20) h.position.y = -20;
+
+                    // Heartbeat Pulse
+                    const scale = h.userData.originalScale * (1 + 0.2 * Math.sin(time * 5 + h.position.x));
+                    h.scale.set(scale, -scale, scale);
                 });
                 renderer.render(scene, camera);
             }
