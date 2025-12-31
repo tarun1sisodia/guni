@@ -183,12 +183,119 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* --- NEW YEAR REVEAL STYLES --- */
+
+        /* 1. Alive/Glowing Text Effect */
+        @keyframes neon-pulse {
+
+            0%,
+            100% {
+                text-shadow:
+                    0 0 7px #fff,
+                    0 0 10px #fff,
+                    0 0 21px #fff,
+                    0 0 42px #ec4899,
+                    0 0 82px #ec4899,
+                    0 0 92px #ec4899,
+                    0 0 102px #ec4899,
+                    0 0 151px #ec4899;
+            }
+
+            50% {
+                text-shadow:
+                    0 0 4px #fff,
+                    0 0 7px #fff,
+                    0 0 13px #fff,
+                    0 0 25px #ec4899,
+                    0 0 50px #ec4899,
+                    0 0 60px #ec4899,
+                    0 0 70px #ec4899,
+                    0 0 90px #ec4899;
+            }
+        }
+
+        .text-alive {
+            animation: neon-pulse 1.5s infinite alternate;
+        }
+
+        /* 2. Overlays */
+        .fullscreen-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            /* Above everything */
+            background: #0f0518;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s ease;
+        }
+
+        .hidden-overlay {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .countdown-number {
+            font-size: 15rem;
+            font-weight: 900;
+            background: linear-gradient(to bottom, #fff, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            animation: heart-beat 1s infinite;
+        }
+
+        @keyframes heart-beat {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
     </style>
 </head>
 
 <!-- CHANGED: Added 'overflow-hidden' to lock scrolling initially -->
 
 <body class="text-white font-sans overflow-hidden antialiased selection:bg-secondary selection:text-white">
+
+    <!-- 0. FINAL COUNTDOWN OVERLAY (10s) -->
+    <div id="final-countdown" class="fullscreen-overlay hidden-overlay">
+        <div class="text-center space-y-8 relative z-10">
+            <p class="text-secondary text-2xl uppercase tracking-[0.5em] font-bold animate-pulse">Approaching Midnight
+            </p>
+            <h1 id="big-count" class="countdown-number">10</h1>
+        </div>
+    </div>
+
+    <!-- 0.1 GRAND REVEAL OVERLAY (Happy New Year) -->
+    <div id="grand-reveal" class="fullscreen-overlay hidden-overlay">
+        <canvas id="fireworks-canvas" class="absolute inset-0 z-0"></canvas>
+        <div class="text-center space-y-12 relative z-10 px-4">
+            <h1 class="text-6xl md:text-9xl font-black font-handwriting text-alive text-white leading-tight">
+                Happy New Year<br>
+                <span class="text-secondary">Gunjan!</span>
+            </h1>
+            <p class="text-slate-300 text-xl font-light tracking-wide max-w-2xl mx-auto">
+                Welcome to our year. Everything begins now.
+            </p>
+            <button onclick="unlockScroll()"
+                class="group relative px-12 py-5 bg-white text-dark font-bold rounded-full hover:scale-105 transition-transform shadow-[0_0_40px_rgba(255,255,255,0.3)]">
+                <span class="relative z-10 flex items-center gap-2">
+                    Start Our Journey <span class="material-symbols-outlined">arrow_downward</span>
+                </span>
+            </button>
+        </div>
+    </div>
 
     <!-- 1. ENTRANCE OVERLAY -->
     <div id="entrance-overlay"
@@ -294,9 +401,10 @@
                 </div>
 
                 <div class="space-y-6 animate-fade-in-up" style="animation-delay: 0.2s;">
+                    <!-- CHANGED: Hidden initially, revealed later -->
                     <h1 class="text-5xl md:text-8xl font-black leading-tight tracking-tight drop-shadow-2xl">
-                        Happy New Year,<br>
-                        <span class="text-gradient font-handwriting py-2 block md:inline">Gunjan!</span>
+                        Waiting for<br>
+                        <span class="text-gradient font-handwriting py-2 block md:inline">2026...</span>
                     </h1>
                     <p class="text-slate-300 text-lg md:text-2xl font-light max-w-2xl mx-auto leading-relaxed">
                         To the girl who holds my heart, may this year bring us closer, happier, and even more in love.
@@ -516,7 +624,8 @@
             });
         });
 
-        const TARGET_DATE = new Date("January 1, 2026 00:00:00").getTime();
+        // const TARGET_DATE = new Date("January 1, 2026 00:00:00").getTime(); // Moved to Section 4
+
 
         // --- AUDIO ENGINE ---
         let audioContext, analyser, dataArray;
@@ -816,15 +925,141 @@
         const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('reveal-visible'); }); }, { threshold: 0.1 });
         document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
 
+        // --- 4. COUNTDOWN & REVEAL LOGIC ---
+        // TEST MODE: Set target to 15 seconds from now for verification
+        // TODO: Change back to "January 1, 2026 00:00:00" before final deployment
+        const TARGET_DATE = new Date(Date.now() + 20000).getTime();
+        // const TARGET_DATE = new Date("January 1, 2026 00:00:00").getTime();
+
+        const finalCountdownOverlay = document.getElementById('final-countdown');
+        const bigCount = document.getElementById('big-count');
+        const grandRevealOverlay = document.getElementById('grand-reveal');
+        let revealTriggered = false;
+
         function updateTimer() {
-            const now = new Date().getTime(), dist = TARGET_DATE - now;
-            if (dist < 0) { document.getElementById('days').innerText = "00"; return; }
+            const now = new Date().getTime();
+            const dist = TARGET_DATE - now;
+
+            if (dist < 0) {
+                // TIMER EXPIRED -> SHOW REVEAL
+                if (!revealTriggered) showGrandReveal();
+                document.getElementById('days').innerText = "00";
+                document.getElementById('hours').innerText = "00";
+                document.getElementById('minutes').innerText = "00";
+                document.getElementById('seconds').innerText = "00";
+                return;
+            }
+
+            // FINAL 10 SECONDS
+            if (dist <= 10000) {
+                if (finalCountdownOverlay.classList.contains('hidden-overlay')) {
+                    finalCountdownOverlay.classList.remove('hidden-overlay');
+                }
+                const secondsLeft = Math.ceil(dist / 1000);
+                bigCount.innerText = secondsLeft;
+                bigCount.style.transform = `scale(${1 + (10 - secondsLeft) * 0.1})`; // Grow slightly
+                return;
+            }
+
+            // STANDARD CLOCK
             document.getElementById('days').innerText = String(Math.floor(dist / (1000 * 60 * 60 * 24))).padStart(2, '0');
             document.getElementById('hours').innerText = String(Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
             document.getElementById('minutes').innerText = String(Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
             document.getElementById('seconds').innerText = String(Math.floor((dist % (1000 * 60)) / 1000)).padStart(2, '0');
         }
-        setInterval(updateTimer, 1000); updateTimer();
+
+        function showGrandReveal() {
+            revealTriggered = true;
+            finalCountdownOverlay.classList.add('hidden-overlay'); // Hide countdown
+            grandRevealOverlay.classList.remove('hidden-overlay'); // Show Reveal
+
+            // Play Celebration Audio if available (optional)
+            // bgMusic.play(); 
+
+            // Trigger Fireworks
+            startFireworks();
+
+            // Massive confetti burst
+            const duration = 15 * 1000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({ particleCount: 8, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ec4899', '#8b5cf6', '#ffffff'] });
+                confetti({ particleCount: 8, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ec4899', '#8b5cf6', '#ffffff'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+
+        function unlockScroll() {
+            // Unlock page
+            document.body.classList.remove('overflow-hidden');
+            document.body.classList.add('overflow-x-hidden');
+
+            // Fade out overlay
+            grandRevealOverlay.style.opacity = '0';
+            setTimeout(() => {
+                grandRevealOverlay.classList.add('hidden-overlay');
+            }, 1000);
+
+            // Scroll to letter
+            document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' });
+        }
+        window.unlockScroll = unlockScroll;
+
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        // --- FIREWORKS ENGINE ---
+        function startFireworks() {
+            const canvas = document.getElementById('fireworks-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            let particles = [];
+
+            function Particle(x, y, color) {
+                this.x = x; this.y = y; this.color = color;
+                this.velocity = { x: (Math.random() - 0.5) * 8, y: (Math.random() - 0.5) * 8 };
+                this.alpha = 1; this.friction = 0.96;
+            }
+
+            Particle.prototype.draw = function () {
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 3, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+
+            Particle.prototype.update = function () {
+                this.velocity.x *= this.friction;
+                this.velocity.y *= this.friction;
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.alpha -= 0.01;
+                this.draw();
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+                ctx.fillStyle = 'rgba(15, 5, 24, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                particles.forEach((particle, i) => {
+                    if (particle.alpha > 0) particle.update();
+                    else particles.splice(i, 1);
+                });
+
+                if (Math.random() < 0.05) {
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * canvas.height * 0.5;
+                    const color = `hsl(${Math.random() * 360}, 50%, 50%)`;
+                    for (let i = 0; i < 30; i++) particles.push(new Particle(x, y, color));
+                }
+            }
+            animate();
+        }
 
     </script>
 </body>
