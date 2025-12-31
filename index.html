@@ -659,26 +659,7 @@
         }
 
         // Loop for Revealing Lyrics
-        function updateLyrics() {
-            if (!isVoicePlaying) return;
-            const currentTime = voiceNote.currentTime;
 
-            VOICE_DATA.forEach((item, index) => {
-                const span = document.getElementById(`word-${index}`);
-                if (currentTime >= item.time) {
-                    span.className = 'lyric-word lyric-active'; // Glow active word
-
-                    // Mark previous words as passed (readable but not glowing)
-                    for (let i = 0; i < index; i++) {
-                        const prevSpan = document.getElementById(`word-${i}`);
-                        if (prevSpan.classList.contains('lyric-active')) {
-                            prevSpan.className = 'lyric-word lyric-passed';
-                        }
-                    }
-                }
-            });
-            requestAnimationFrame(updateLyrics);
-        }
 
         // --- AUDIO ENGINE (ROBUST MODE) ---
         // Simplified to not use Web Audio API to avoid CORS issues on Netlify
@@ -759,6 +740,9 @@
         });
 
         // 2. Play Voice Message (The Reveal)
+        // 2. Play Voice Message (The Reveal)
+        let signatureRevealed = false; // Flag to ensure single trigger
+
         function playVoiceMessage() {
             // Init simulation if not already running
             initAudioContext();
@@ -773,11 +757,60 @@
             // Play Voice Note
             voiceNote.volume = 1.0;
             voiceNote.play().catch(e => console.error("Voice play failed:", e));
+
+            // Allow re-trigger if re-played (optional, but good for testing)
+            signatureRevealed = false;
             isVoicePlaying = true;
             updateLyrics();
         }
         // Make function globally available for button onclick
         window.playVoiceMessage = playVoiceMessage;
+
+        // Loop for Revealing Lyrics
+        function updateLyrics() {
+            if (!isVoicePlaying) return;
+            const currentTime = voiceNote.currentTime;
+
+            // Check for completion (Last word time + 1.5s buffer for reading)
+            if (!signatureRevealed && VOICE_DATA.length > 0) {
+                const lastWordTime = VOICE_DATA[VOICE_DATA.length - 1].time;
+                if (currentTime > lastWordTime + 0.5) {
+                    signatureRevealed = true;
+
+                    const sig = document.getElementById('signature-block');
+                    sig.classList.remove('opacity-0');
+
+                    // Sparkles text effect around signature
+                    const rect = sig.getBoundingClientRect();
+                    const x = (rect.left + rect.width / 2) / window.innerWidth;
+                    const y = (rect.top + rect.height / 2) / window.innerHeight;
+
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: y, x: x },
+                        colors: ['#FFD700', '#ec4899'],
+                        zIndex: 9999
+                    });
+                }
+            }
+
+            VOICE_DATA.forEach((item, index) => {
+                const span = document.getElementById(`word-${index}`);
+                if (currentTime >= item.time) {
+                    span.className = 'lyric-word lyric-active'; // Glow active word
+
+                    // Mark previous words as passed (readable but not glowing)
+                    for (let i = 0; i < index; i++) {
+                        const prevSpan = document.getElementById(`word-${i}`);
+                        if (prevSpan.classList.contains('lyric-active')) {
+                            prevSpan.className = 'lyric-word lyric-passed';
+                        }
+                    }
+                }
+            });
+            requestAnimationFrame(updateLyrics);
+        }
 
         // 3. Toggle BG Music (Top Right Button)
         musicToggleBtn.addEventListener('click', () => {
@@ -985,10 +1018,11 @@
             // Play Celebration Audio if available (optional)
             // bgMusic.play(); 
 
-            // Trigger Fireworks
-            startFireworks();
+            // HIDE TIMER
+            const timerContainer = document.getElementById('timer-container');
+            if (timerContainer) timerContainer.classList.add('hidden');
 
-            // Massive confetti burst
+            // Massive confetti burst (Fireworks moved to button click)
             const duration = 10 * 1000;
             const end = Date.now() + duration;
 
@@ -1009,6 +1043,9 @@
             if (document.getElementById('bg-instrumental').paused) {
                 document.getElementById('bg-instrumental').play().catch(e => console.log("Auto-play blocked"));
             }
+
+            // FIREWORKS START NOW
+            startFireworks();
 
             // Fade out overlay
             grandRevealOverlay.style.opacity = '0';
