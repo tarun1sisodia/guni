@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For You ❤️</title>
+    <title>Happy New Year 2026</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,11 +30,11 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#8b5cf6', // Violet-500
-                        secondary: '#ec4899', // Pink-500
-                        dark: '#0f0518', // Deep purple-black
-                        'dark-surface': '#1e1b2e',
-                        light: '#fdf4ff'
+                        primary: '#fbbf24', // Amber-400 (Gold)
+                        secondary: '#38bdf8', // Sky-400 (Bright Blue)
+                        dark: '#020617', // Slate-950
+                        'dark-surface': '#1e293b', // Slate-800
+                        light: '#f8fafc' // Slate-50
                     },
                     fontFamily: {
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
@@ -71,7 +71,7 @@
     <style>
         /* --- Custom Styles --- */
         body {
-            background-color: #0f0518;
+            background-color: #020617;
             cursor: none;
             user-select: none;
             -webkit-user-select: none;
@@ -203,11 +203,11 @@
                     0 0 7px #fff,
                     0 0 10px #fff,
                     0 0 21px #fff,
-                    0 0 42px #ec4899,
-                    0 0 82px #ec4899,
-                    0 0 92px #ec4899,
-                    0 0 102px #ec4899,
-                    0 0 151px #ec4899;
+                    0 0 42px #38bdf8,
+                    0 0 82px #38bdf8,
+                    0 0 92px #38bdf8,
+                    0 0 102px #38bdf8,
+                    0 0 151px #38bdf8;
             }
 
             50% {
@@ -215,11 +215,11 @@
                     0 0 4px #fff,
                     0 0 7px #fff,
                     0 0 13px #fff,
-                    0 0 25px #ec4899,
-                    0 0 50px #ec4899,
-                    0 0 60px #ec4899,
-                    0 0 70px #ec4899,
-                    0 0 90px #ec4899;
+                    0 0 25px #38bdf8,
+                    0 0 50px #38bdf8,
+                    0 0 60px #38bdf8,
+                    0 0 70px #38bdf8,
+                    0 0 90px #38bdf8;
             }
         }
 
@@ -249,15 +249,15 @@
         .countdown-number {
             font-size: 15rem;
             font-weight: 900;
-            background: linear-gradient(to bottom, #fff, #ec4899);
+            background: linear-gradient(to bottom, #fff, #38bdf8);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            animation: heart-beat 1s infinite;
+            animation: pulse-beat 1s infinite;
         }
 
-        @keyframes heart-beat {
+        @keyframes pulse-beat {
             0% {
                 transform: scale(1);
             }
@@ -422,8 +422,8 @@
             </div>
             <h1
                 class="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary font-handwriting animate-float">
-                For You</h1>
-            <p class="text-slate-400 text-lg font-light tracking-wide">A little surprise for our New Year...</p>
+                2026</h1>
+            <p class="text-slate-400 text-lg font-light tracking-wide">Wishing you the best year ahead...</p>
             <button id="enter-btn"
                 class="group relative px-10 py-4 bg-white/5 backdrop-blur-md rounded-full border border-white/10 hover:border-secondary/50 transition-all duration-500 hover:scale-110 overflow-hidden shadow-2xl shadow-secondary/20">
                 <div
@@ -431,9 +431,8 @@
                 </div>
                 <span
                     class="relative z-10 flex items-center gap-3 font-bold text-white tracking-widest text-sm uppercase">
-                    <span
-                        class="material-symbols-outlined filled text-pink-400 group-hover:animate-ping">favorite</span>
-                    Open Gift
+                    <span class="material-symbols-outlined filled text-yellow-400 group-hover:animate-ping">star</span>
+                    Let's Celebrate
                 </span>
             </button>
         </div>
@@ -460,9 +459,9 @@
                 class="absolute top-4 right-4 text-white/50 hover:text-white">
                 <span class="material-symbols-outlined">close</span>
             </button>
-            <h3 class="text-2xl font-bold text-white">Love Tracker 💘</h3>
+            <h3 class="text-2xl font-bold text-white">Wishes Sent ✨</h3>
             <div class="py-8">
-                <p class="text-white/60 text-xs uppercase tracking-widest mb-2">Total 'Send Love' Clicks</p>
+                <p class="text-white/60 text-xs uppercase tracking-widest mb-2">Total 'Send Hype' Clicks</p>
                 <p id="admin-count"
                     class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
                     0</p>
@@ -482,11 +481,11 @@
     <!-- 4. FLOATING ACTION BUTTON -->
     <div class="fixed bottom-8 right-6 z-50">
         <button onclick="sendLove()"
-            class="group relative w-16 h-16 bg-gradient-to-tr from-pink-600 to-purple-600 rounded-full flex items-center justify-center text-white shadow-xl shadow-pink-600/30 hover:shadow-pink-600/60 hover:scale-110 transition-all duration-300">
-            <span class="material-symbols-outlined text-3xl animate-bounce">favorite</span>
+            class="group relative w-16 h-16 bg-gradient-to-tr from-amber-500 to-yellow-600 rounded-full flex items-center justify-center text-white shadow-xl shadow-amber-500/30 hover:shadow-amber-500/60 hover:scale-110 transition-all duration-300">
+            <span class="material-symbols-outlined text-3xl animate-bounce">celebration</span>
             <span
-                class="absolute right-full mr-4 top-1/2 -translate-y-1/2 scale-0 group-hover:scale-100 origin-right transition-transform bg-white/90 text-purple-900 text-xs font-bold px-3 py-1.5 rounded-lg whitespace-nowrap shadow-lg">Send
-                Love!</span>
+                class="absolute right-full mr-4 top-1/2 -translate-y-1/2 scale-0 group-hover:scale-100 origin-right transition-transform bg-white/90 text-slate-900 text-xs font-bold px-3 py-1.5 rounded-lg whitespace-nowrap shadow-lg">Send
+                Hype!</span>
         </button>
     </div>
 
@@ -523,7 +522,8 @@
                         <span class="text-gradient font-handwriting py-2 block md:inline">2026...</span>
                     </h1>
                     <p class="text-slate-300 text-lg md:text-2xl font-light max-w-2xl mx-auto leading-relaxed">
-                        To the girl who holds my heart, may this year bring us closer, happier, and even more in love.
+                        May this year bring you closer to your dreams, fill your life with success, and create memories
+                        you'll cherish forever.
                     </p>
                 </div>
 
@@ -602,8 +602,8 @@
                             class="w-20 h-20 mx-auto bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/30">
                             <span class="material-symbols-outlined text-4xl text-white">favorite</span>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-3">Love & Joy</h3>
-                        <p class="text-slate-300 leading-relaxed">Wishing you endless laughter, cherished moments, and
+                        <h3 class="text-2xl font-bold text-white mb-3">Happiness</h3>
+                        <p class="text-slate-300 leading-relaxed">Wishing you endless laughter, cherised moments, and
                             being surrounded by those who matter most.</p>
                     </div>
                 </div>
@@ -624,8 +624,8 @@
                             <span class="material-symbols-outlined text-3xl text-white">graphic_eq</span>
                         </div>
                         <div class="text-center">
-                            <h3 class="font-bold text-white text-lg">New Voice Message</h3>
-                            <p class="text-xs text-slate-300 uppercase tracking-widest">From Tarun</p>
+                            <h3 class="font-bold text-white text-lg">A Special Wish</h3>
+                            <p class="text-xs text-slate-300 uppercase tracking-widest">Open Me</p>
                         </div>
                         <button onclick="playVoiceMessage()"
                             class="mt-2 px-8 py-3 bg-white text-primary rounded-full font-bold hover:scale-105 transition-transform flex items-center gap-2">
@@ -654,8 +654,8 @@
                 </div>
 
                 <div id="signature-block" class="pt-8 opacity-0 transition-opacity duration-1000">
-                    <p class="font-handwriting text-3xl text-white/80">Forever Yours,<br><span
-                            class="text-4xl text-white font-bold">Tarun</span></p>
+                    <p class="font-handwriting text-3xl text-white/80">Best Wishes,<br><span
+                            class="text-4xl text-white font-bold">2026</span></p>
                 </div>
             </div>
         </section>
@@ -800,7 +800,7 @@
                     }
 
                     const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-                    gradient.addColorStop(0, '#ec4899');
+                    gradient.addColorStop(0, '#38bdf8');
                     gradient.addColorStop(1, 'transparent');
                     ctx.fillStyle = gradient;
                     ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 2, barHeight);
@@ -834,8 +834,8 @@
             var duration = 3 * 1000;
             var end = Date.now() + duration;
             (function frame() {
-                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ec4899', '#8b5cf6'] });
-                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ec4899', '#8b5cf6'] });
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#38bdf8', '#fbbf24'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#38bdf8', '#fbbf24'] });
                 if (Date.now() < end) requestAnimationFrame(frame);
             }());
         });
@@ -890,7 +890,7 @@
                         particleCount: 100,
                         spread: 70,
                         origin: { y: y, x: x },
-                        colors: ['#FFD700', '#ec4899'],
+                        colors: ['#FFD700', '#38bdf8'],
                         zIndex: 9999
                     });
                 }
@@ -934,7 +934,7 @@
         // --- SEND LOVE & TRACKING ---
         async function sendLove() {
             const defaults = { origin: { y: 0.9, x: 0.9 }, spread: 30, startVelocity: 40, scalar: 2 };
-            confetti({ ...defaults, particleCount: 20, shapes: ['heart'], colors: ['#ec4899', '#ef4444'] });
+            confetti({ ...defaults, particleCount: 20, shapes: ['star'], colors: ['#fbbf24', '#38bdf8'] });
             if (db) {
                 const docRef = db.collection('love_clicks').doc('summary');
                 try {
@@ -974,24 +974,15 @@
             document.body.prepend(container);
             container.appendChild(renderer.domElement);
 
-            const heartShape = new THREE.Shape();
-            const x = 0, y = 0;
-            heartShape.moveTo(x + 5, y + 5);
-            heartShape.bezierCurveTo(x + 5, y + 5, x + 4, y, x, y);
-            heartShape.bezierCurveTo(x - 6, y, x - 6, y + 7, x - 6, y + 7);
-            heartShape.bezierCurveTo(x - 6, y + 11, x - 3, y + 15.4, x + 5, y + 19);
-            heartShape.bezierCurveTo(x + 12, y + 15.4, x + 16, y + 11, x + 16, y + 7);
-            heartShape.bezierCurveTo(x + 16, y + 7, x + 16, y, x + 10, y);
-            heartShape.bezierCurveTo(x + 7, y, x + 5, y + 5, x + 5, y + 5);
-            const geometry = new THREE.ShapeGeometry(heartShape);
             const hearts = [];
 
             // OPTIMIZATION: Reduce count on mobile
             const heartCount = isMobile ? 15 : 40;
 
             for (let i = 0; i < heartCount; i++) {
-                const material = new THREE.MeshBasicMaterial({ color: Math.random() > 0.5 ? 0xec4899 : 0x8b5cf6, transparent: true, opacity: Math.random() * 0.4 + 0.1, side: THREE.DoubleSide });
-                const mesh = new THREE.Mesh(geometry, material);
+                const material = new THREE.MeshBasicMaterial({ color: Math.random() > 0.5 ? 0xfbbf24 : 0x38bdf8, transparent: true, opacity: Math.random() * 0.4 + 0.1, side: THREE.DoubleSide });
+                // const mesh = new THREE.Mesh(geometry, material); // Use Heart Geometry
+                const mesh = new THREE.Mesh(new THREE.OctahedronGeometry(1.5), material); // Use Geometric Shape
                 mesh.position.set((Math.random() - 0.5) * 40, (Math.random() - 0.5) * 40, (Math.random() - 0.5) * 40);
                 const s = Math.random() * 0.05 + 0.02;
                 mesh.scale.set(s, -s, s);
@@ -1167,8 +1158,8 @@
             const end = Date.now() + duration;
 
             (function frame() {
-                confetti({ particleCount: 8, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ec4899', '#8b5cf6', '#ffffff'] });
-                confetti({ particleCount: 8, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ec4899', '#8b5cf6', '#ffffff'] });
+                confetti({ particleCount: 8, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#38bdf8', '#fbbf24', '#ffffff'] });
+                confetti({ particleCount: 8, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#38bdf8', '#fbbf24', '#ffffff'] });
                 if (Date.now() < end) requestAnimationFrame(frame);
             }());
         }
