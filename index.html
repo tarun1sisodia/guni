@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Guni ❤️</title>
+    <title>For You ❤️</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -399,7 +399,7 @@
         <div class="text-center space-y-12 relative z-10 px-4">
             <h1 class="text-6xl md:text-9xl font-black font-handwriting text-alive text-white leading-tight">
                 Happy New Year<br>
-                <span class="text-secondary">Gunjan!</span>
+                <span class="text-secondary">2026!</span>
             </h1>
             <p class="text-slate-300 text-xl font-light tracking-wide max-w-2xl mx-auto">
                 Welcome to our year. Everything begins now.
@@ -422,7 +422,7 @@
             </div>
             <h1
                 class="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary font-handwriting animate-float">
-                For You, Gunjan</h1>
+                For You</h1>
             <p class="text-slate-400 text-lg font-light tracking-wide">A little surprise for our New Year...</p>
             <button id="enter-btn"
                 class="group relative px-10 py-4 bg-white/5 backdrop-blur-md rounded-full border border-white/10 hover:border-secondary/50 transition-all duration-500 hover:scale-110 overflow-hidden shadow-2xl shadow-secondary/20">
@@ -559,55 +559,54 @@
         </section>
 
         <!-- SECTION 2: 3D MEMORY GALLERY -->
+        <!-- SECTION 2: 2026 ASPIRATIONS (Replaces Gallery) -->
         <section id="gallery" class="w-full py-32 px-4 md:px-8 relative z-10">
             <div class="max-w-7xl mx-auto">
-                <div class="flex flex-col items-center mb-10 text-center">
-                    <span
-                        class="text-secondary font-handwriting text-4xl mb-3 transform -rotate-3 inline-block">Unforgettable
-                        Moments</span>
+                <div class="flex flex-col items-center mb-16 text-center">
+                    <span class="text-secondary font-handwriting text-4xl mb-3 transform -rotate-3 inline-block">New
+                        Beginnings</span>
                     <h2
                         class="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-slate-500">
-                        Our Journey So Far</h2>
+                        Hopes for 2026</h2>
                 </div>
 
-                <!-- 3D PORTRAIT CAROUSEL -->
-                <div class="carousel-scene" id="scene">
-                    <div class="carousel" id="carousel">
-                        <!-- Card 1 -->
-                        <div class="carousel-card">
-                            <img src="assets/img1.png" alt="Memory 1">
-                            <div class="carousel-overlay">
-                                <p class="text-white font-handwriting text-2xl">First Date</p>
-                            </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Card 1 -->
+                    <div
+                        class="glass-panel p-8 rounded-3xl text-center transform hover:scale-105 transition-transform duration-300">
+                        <div
+                            class="w-20 h-20 mx-auto bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-indigo-500/30">
+                            <span class="material-symbols-outlined text-4xl text-white">flight_takeoff</span>
                         </div>
-                        <!-- Card 2 -->
-                        <div class="carousel-card">
-                            <img src="assets/img2.png" alt="Memory 2">
-                            <div class="carousel-overlay">
-                                <p class="text-white font-handwriting text-2xl">Crazy Adventures</p>
-                            </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">New Adventures</h3>
+                        <p class="text-slate-300 leading-relaxed">May this year take you to places you've never been and
+                            experiences you'll never forget.</p>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div
+                        class="glass-panel p-8 rounded-3xl text-center transform hover:scale-105 transition-transform duration-300 translate-y-0 md:-translate-y-4 border border-secondary/20 shadow-2xl shadow-secondary/10">
+                        <div
+                            class="w-20 h-20 mx-auto bg-gradient-to-br from-pink-500 to-rose-600 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-pink-500/30">
+                            <span class="material-symbols-outlined text-4xl text-white">auto_awesome</span>
                         </div>
-                        <!-- Card 3 -->
-                        <div class="carousel-card">
-                            <img src="assets/img3.png" alt="Memory 3">
-                            <div class="carousel-overlay">
-                                <p class="text-white font-handwriting text-2xl">Your Smile</p>
-                            </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">Success & Growth</h3>
+                        <p class="text-slate-300 leading-relaxed">Dream big, work hard, and achieve everything you set
+                            your mind to. This is your year.</p>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div
+                        class="glass-panel p-8 rounded-3xl text-center transform hover:scale-105 transition-transform duration-300">
+                        <div
+                            class="w-20 h-20 mx-auto bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/30">
+                            <span class="material-symbols-outlined text-4xl text-white">favorite</span>
                         </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">Love & Joy</h3>
+                        <p class="text-slate-300 leading-relaxed">Wishing you endless laughter, cherished moments, and
+                            being surrounded by those who matter most.</p>
                     </div>
                 </div>
-
-                <div class="flex justify-center gap-6 mt-8">
-                    <button onclick="rotateCarousel(-1)"
-                        class="p-4 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md text-white transition-all hover:scale-110">
-                        <span class="material-symbols-outlined">arrow_back</span>
-                    </button>
-                    <button onclick="rotateCarousel(1)"
-                        class="p-4 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md text-white transition-all hover:scale-110">
-                        <span class="material-symbols-outlined">arrow_forward</span>
-                    </button>
-                </div>
-
             </div>
         </section>
 
@@ -645,7 +644,7 @@
                 </div>
 
                 <div class="space-y-8 relative z-10 w-full">
-                    <h2 class="font-handwriting text-5xl md:text-6xl text-white drop-shadow-lg">My Promise to You</h2>
+                    <h2 class="font-handwriting text-5xl md:text-6xl text-white drop-shadow-lg">A Wish for 2026</h2>
 
                     <!-- LYRIC CONTAINER (Initially Hidden/Blurred) -->
                     <div id="lyrics-container"
@@ -663,8 +662,7 @@
 
         <footer class="py-12 text-center text-slate-600 text-sm font-medium tracking-widest uppercase">
             <!-- SECRET TRIGGER: Double Click text below -->
-            <p id="admin-trigger" class="cursor-pointer hover:text-white transition-colors select-none">Made with ❤️ for
-                Gunjan</p>
+            <p id="admin-trigger" class="cursor-pointer hover:text-white transition-colors select-none">Made with ❤️</p>
         </footer>
 
     </main>
@@ -711,10 +709,10 @@
         // --- 2. SMART VOICE SYNC ---
         // UPDATE SENTENCES HERE WITH START AND END TIMES
         const SENTENCES = [
-            { text: "My dearest Guni ,", start: 0.5, end: 2.0 },
-            { text: "I know this year has been crazy alot of highs and lows you go through,", start: 2.5, end: 5.0 },
-            { text: "but holding your hand makes it all worth it.", start: 5.5, end: 9.0 },
-            { text: "I love you more than words can express.", start: 9.5, end: 11.0 }
+            { text: "As we step into 2026,", start: 0.5, end: 2.5 },
+            { text: "May this year bring you new hope, success,", start: 3.0, end: 6.0 },
+            { text: "and moments that make you smile every day.", start: 6.5, end: 9.5 },
+            { text: "Wishing you a very Happy New Year!", start: 10.0, end: 12.0 }
         ];
 
         // Generator Logic
@@ -1255,17 +1253,7 @@
             animate();
         }
 
-        // --- CAROUSEL LOGIC ---
-        let currDeg = 0;
-        function rotateCarousel(direction) {
-            currDeg += direction * 120; // 3 items = 360 / 3 = 120deg
-            document.getElementById('carousel').style.transform = `rotateY(${currDeg}deg)`;
-        }
 
-        // Auto rotate every 3 seconds
-        setInterval(() => {
-            rotateCarousel(-1);
-        }, 3000);
 
     </script>
 </body>
